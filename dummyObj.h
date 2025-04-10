@@ -17,7 +17,12 @@ public:
     ~dummyObj();
 
     void onFramePassed(DynamicObj *obj){
-        return;
+        if(obj->getX() == 64){
+            obj->move(0, 0);
+        } else {
+            obj->move(obj->getX()+3, 0);
+        }
+
     }
 };
 

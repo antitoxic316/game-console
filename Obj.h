@@ -22,8 +22,8 @@ public:
         return name;
     }
 
-    void setBitMap(const uint8_t *bitmap, int w, int h);
-    const uint8_t *getBitMap(){
+    void setBitmap(const uint8_t *bitmap, int w, int h);
+    const uint8_t *getBitmap(){
         return this->bit_map;
     }
 

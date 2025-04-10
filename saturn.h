@@ -66,9 +66,9 @@ private:
     std::vector<std::shared_ptr<StaticObj>> static_objects;
     std::vector<std::shared_ptr<DynamicObj>> dynamic_objects;
 
-    Adafruit_SSD1306 graph_env;
+    Adafruit_SSD1306 *graph_env;
 
-    std::time_t frame_rate = 15;
+    int frame_rate = 15;
 public:
     Saturn(/* args */);
     ~Saturn();
@@ -78,7 +78,7 @@ public:
 
     void update_frame(void);
 
-    void setGraphicalEnv(Adafruit_SSD1306 &graph_env);
+    void setGraphicalEnv(Adafruit_SSD1306 *graph_env);
 
     void start();
 };

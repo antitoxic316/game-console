@@ -1,6 +1,6 @@
 #include "Obj.h"
 
-void Obj::setBitMap(const uint8_t *bitmap, int w, int h){
+void Obj::setBitmap(const uint8_t *bitmap, int w, int h){
     this->bit_map = bitmap;
     this->w = w;
     this->h = h;

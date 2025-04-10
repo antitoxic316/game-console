@@ -9,10 +9,10 @@ Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
 
 Dummygame::Dummygame()
 {
-    this->game_env.setGraphicalEnv(display);
+    this->game_env.setGraphicalEnv(&display);
 
     std::shared_ptr<dummyObj> ralsei_obj = std::make_shared<dummyObj>("ralsei");
-    ralsei_obj->setBitMap(img_bitmap, 64, 64);
+    ralsei_obj->setBitmap(img_bitmap, 64, 64);
     
 
     this->game_env.add_dynamicObj(ralsei_obj);
