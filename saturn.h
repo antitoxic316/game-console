@@ -29,8 +29,8 @@
 #include <memory>
 #include <ctime>
 
-#include "staticObj.h"
-#include "dynamicObj.h"
+#include "StaticObj.h"
+#include "DynamicObjBase.h"
 
 #include <SPI.h>
 #include <Wire.h>
@@ -68,17 +68,19 @@ private:
 
     Adafruit_SSD1306 *graph_env;
 
-    int frame_rate = 15;
+    int frame_rate = 25;
 public:
-    Saturn(/* args */);
+    Saturn();
     ~Saturn();
 
     template<typename T>
     void add_dynamicObj(const std::shared_ptr<T> &obj);
 
-    void update_frame(void);
-
     void setGraphicalEnv(Adafruit_SSD1306 *graph_env);
+
+    std::unique_ptr<std::vector<Obj*>> getObjectCollisions(DynamicObj *obj);
+
+    void update_frame(void);
 
     void start();
 };

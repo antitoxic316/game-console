@@ -11,7 +11,7 @@ private:
     std::string name;
     int x = 0, y = 0;
     int w = 0, h = 0;
-    bool isSolid = false;
+    bool isSolid = true;
     const uint8_t *bit_map;
 public:
     Obj (const std::string &name) : name(name) {

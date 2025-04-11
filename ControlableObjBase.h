@@ -1,0 +1,2 @@
+/*Inherit from this class for automatic callback
+ assigning*/
