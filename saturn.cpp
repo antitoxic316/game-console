@@ -12,14 +12,7 @@ void Saturn::update_frame(void){
     this->graph_env->clearDisplay();
 
         for(auto &obj: this->dynamic_objects) {
-
-
-            char* ccx = new char[obj->getName().length() + 1];
-            std::copy(obj->getName().begin(), obj->getName().end(), ccx);
-            Serial.println(ccx);
-
-            Serial.println((uint8_t)pgm_read_word(obj->getBitmap()));
-
+            std::unique_ptr<std::vector<Obj*>> obj_colls;
 
             obj->onFramePassed();
             Serial.println("on frame passed");
@@ -28,7 +21,16 @@ void Saturn::update_frame(void){
                 obj->getBitmap(),
                 obj->getWidth(), obj->getHeight(),
                 1);
-            
+
+            obj_colls = this->getObjectCollisions(obj.get());
+
+            if(!obj_colls){
+                continue;
+            }
+
+            for(auto *obj_collision: *obj_colls){
+                obj->onCollision(obj_collision->getName());
+            }
         }
 
     this->graph_env->display();
@@ -51,7 +53,17 @@ void Saturn::setGraphicalEnv(Adafruit_SSD1306 *graph_env){
         // Clear the buffer
         this->graph_env->clearDisplay();
         Serial.println("cleared buffer");
-}   
+}
+
+std::unique_ptr<std::vector<Obj*>> Saturn::getObjectCollisions(DynamicObj *obj){
+    std::unique_ptr<std::vector<Obj*>> objs;
+    objs = std::make_unique<std::vector<Obj*>>();
+    for(auto &coll_obj: this->dynamic_objects){
+        objs->push_back(static_cast<Obj*>(coll_obj.get()));
+    }
+
+    return objs;
+}
 
 void Saturn::start(){
     ulong start_time = millis();
@@ -68,5 +80,4 @@ void Saturn::start(){
             Serial.println(1.0/(float)this->frame_rate);
         }
     }
-    
 }
