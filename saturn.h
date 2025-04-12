@@ -74,11 +74,14 @@ public:
     ~Saturn();
 
     template<typename T>
-    void add_dynamicObj(const std::shared_ptr<T> &obj);
-
+    void add_dynamicObj(const std::shared_ptr<T> &obj_ptr);
+    template<typename T>
+    void add_staticObj(const std::shared_ptr<T> &obj_ptr);
+    
     void setGraphicalEnv(Adafruit_SSD1306 *graph_env);
 
     std::unique_ptr<std::vector<Obj*>> getObjectCollisions(DynamicObj *obj);
+    bool areObjectsCollided(Obj *objA, Obj *objB);
 
     void update_frame(void);
 
@@ -86,10 +89,17 @@ public:
 };
 
 template<typename T>
-void Saturn::add_dynamicObj(const std::shared_ptr<T> &obj){
-    static_assert(std::is_base_of<DynamicObj, T>:: value, 
+void Saturn::add_dynamicObj(const std::shared_ptr<T> &obj_ptr){
+    static_assert(std::is_base_of<DynamicObj, T>::value, 
                        "Argument failed check for inheritence from DynamicObj");
-    this->dynamic_objects.push_back(obj);
+    this->dynamic_objects.push_back(obj_ptr);
+}
+
+template<typename T>
+void Saturn::add_staticObj(const std::shared_ptr<T> &obj_ptr){
+    static_assert(std::is_base_of<StaticObj, T>::value,
+                        "Argument failed check for inheritence from StaticObj");
+    this->static_objects.push_back(obj_ptr);
 }
 
 #endif

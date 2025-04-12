@@ -6,7 +6,8 @@
 class dummyObj : public DynamicObjBase<dummyObj>
 {
 private:
-    /* data */
+    int x_speed = 2;
+    int y_speed = 2;
 public:
     dummyObj(const std::string &name)
     : DynamicObjBase(name){
@@ -14,11 +15,7 @@ public:
     ~dummyObj();
 
     void onFramePassed(DynamicObj *obj){
-        if(obj->getX() == 64){
-            obj->move(0, 0);
-        } else {
-            obj->move(obj->getX()+3, 0);
-        }
+        this->move(this->getX() + x_speed, this->getY() + y_speed);
     }
 
     void onCollision(DynamicObj *obj, const std::string &obj_name){

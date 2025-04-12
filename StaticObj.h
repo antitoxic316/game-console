@@ -3,16 +3,16 @@
 
 #include "Obj.h"
 
-class StaticObj : Obj
+class StaticObj : public Obj
 {
 private:
     /* data */
 public:
-    StaticObj(std::string &name)
+    StaticObj(const std::string &name)
     : Obj(name){
 
     }
-    ~StaticObj();
+    virtual ~StaticObj() override;
 };
 
 #endif
