@@ -75,8 +75,6 @@ std::unique_ptr<std::vector<Obj*>> Saturn::getObjectCollisions(DynamicObj *obj){
     return collided_objs;
 }
 
-// TODO: fix collisions with borders, 
-//objects only collide with them when they pass through 
 bool Saturn::areObjectsCollided(Obj *objA, Obj *objB){
     //top left corner is x=0, y=0
 
@@ -89,13 +87,18 @@ bool Saturn::areObjectsCollided(Obj *objA, Obj *objB){
     int objBRightBorder = objB->getX() + objB->getWidth();
     int objBTopBorder = objB->getY();
     int objBBottomBorder = objB->getY() + objB->getHeight();
-    
 
-    if(objARightBorder > objBLeftBorder && objALeftBorder < objBRightBorder){
-        return true;
+    bool x_aligned = false;
+    bool y_aligned = false;
+
+    if(objARightBorder >= objBLeftBorder && objALeftBorder <= objBRightBorder){
+        x_aligned = true;
+    }
+    if(objABottomBorder >= objBTopBorder && objATopBorder <= objBBottomBorder){
+        y_aligned = true;
     }
 
-    return false;
+    return x_aligned && y_aligned;
 }
 
 void Saturn::start(){

@@ -27,23 +27,22 @@ Dummygame::Dummygame()
 
 // TODO: move this function into engine class or some utils class;
 //implement bit map creation
-void Dummygame::generateScreenBorders(int screen_w, int screen_h, bool inside, bool visible){
+void Dummygame::generateScreenBorders(int screen_w, int screen_h, bool inside_screen, bool visible){
     auto bottom_border = std::make_shared<StaticObj>("bottomBorder");
-    bottom_border->move(0, screen_h+1);
+    bottom_border->move(-1, screen_h+1);
     bottom_border->setBitmap(nullptr, screen_w, 1);
     
     auto top_border = std::make_shared<StaticObj>("topBorder");
-    bottom_border->move(-1, -1);
-    bottom_border->setBitmap(nullptr, screen_w, 1);
+    top_border->move(-1, -1);
+    top_border->setBitmap(nullptr, screen_w, 1);
     
     auto left_border = std::make_shared<StaticObj>("leftBorder");
-    bottom_border->move(-1, -1);
-    bottom_border->setBitmap(nullptr, 1, screen_h);
+    left_border->move(-1, -1);
+    left_border->setBitmap(nullptr, 1, screen_h);
     
     auto right_border = std::make_shared<StaticObj>("rightBorder");
-    bottom_border->move(screen_w+1, -1);
-    bottom_border->setBitmap(nullptr, 1, screen_h);
-
+    right_border->move(screen_w+1, -1);
+    right_border->setBitmap(nullptr, 1, screen_h);
 
     this->game_env.add_staticObj(bottom_border);
     this->game_env.add_staticObj(top_border);
