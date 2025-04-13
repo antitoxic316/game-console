@@ -12,7 +12,7 @@ void Saturn::update_frame(void){
     this->graph_env->clearDisplay();
 
     for(auto &obj: this->dynamic_objects) {
-        std::unique_ptr<std::vector<Obj*>> obj_colls;
+        std::unique_ptr<std::vector<Collision>> obj_colls;
 
         obj->onFramePassed();
         if(!obj->getBitmap()){
@@ -31,8 +31,8 @@ skip_drawing_object:
             continue;
         }
 
-        for(auto *obj_collision: *obj_colls){
-            obj->onCollision(obj_collision->getName());
+        for(auto obj_collision: *obj_colls){
+            obj->onCollision(obj_collision);
         }
     }
 
@@ -57,18 +57,20 @@ void Saturn::setGraphicalEnv(Adafruit_SSD1306 *graph_env){
     this->graph_env->clearDisplay();
 }
 
-std::unique_ptr<std::vector<Obj*>> Saturn::getObjectCollisions(DynamicObj *obj){
-    auto collided_objs = std::make_unique<std::vector<Obj*>>();
+std::unique_ptr<std::vector<Collision>> Saturn::getObjectCollisions(DynamicObj *obj){
+    auto collided_objs = std::make_unique<std::vector<Collision>>();
     
     for(auto &dynamic_obj_p: this->dynamic_objects){
         if(this->areObjectsCollided(obj, dynamic_obj_p.get())){
-            collided_objs->push_back(dynamic_obj_p.get());
+            Collision coll_info = this->getCollisionInfo(obj, dynamic_obj_p.get());
+            collided_objs->push_back(coll_info);
         }
     }
 
     for(auto &static_obj_p: this->static_objects){
         if(this->areObjectsCollided(obj, static_obj_p.get())){
-            collided_objs->push_back(static_obj_p.get());
+            Collision coll_info = this->getCollisionInfo(obj, static_obj_p.get());
+            collided_objs->push_back(coll_info);
         }
     }
 
@@ -99,6 +101,36 @@ bool Saturn::areObjectsCollided(Obj *objA, Obj *objB){
     }
 
     return x_aligned && y_aligned;
+}
+
+Collision Saturn::getCollisionInfo(Obj *objA, Obj *objB){
+    int objALeftBorder = objA->getX();
+    int objARightBorder = objA->getX() + objA->getWidth();
+    int objATopBorder = objA->getY();
+    int objABottomBorder = objA->getY() + objA->getHeight();
+    
+    int objBLeftBorder = objB->getX();
+    int objBRightBorder = objB->getX() + objB->getWidth();
+    int objBTopBorder = objB->getY();
+    int objBBottomBorder = objB->getY() + objB->getHeight();
+
+    Collision coll_info;
+    coll_info.obj = objB;
+
+    if(objATopBorder - objBBottomBorder > objALeftBorder - objBRightBorder){
+        coll_info.collision_side = Collision::Side::BOTTOM;
+    }
+    if(objALeftBorder - objBRightBorder > objBTopBorder - objABottomBorder){
+        coll_info.collision_side = Collision::Side::RIGHT;
+    }
+    if(objBLeftBorder - objARightBorder > objATopBorder - objBBottomBorder){
+        coll_info.collision_side = Collision::Side::LEFT;
+    }
+    if(objALeftBorder - objBRightBorder > objBTopBorder - objABottomBorder){
+        coll_info.collision_side = Collision::Side::TOP;
+    }
+
+    return coll_info;
 }
 
 void Saturn::start(){

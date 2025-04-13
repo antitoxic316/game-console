@@ -14,15 +14,23 @@ public:
     }
     ~dummyObj();
 
-    void onFramePassed(DynamicObj *obj){
+    void onFramePassed(DynamicObj *self_obj){
         this->move(this->getX() + x_speed, this->getY() + y_speed);
     }
 
-    void onCollision(DynamicObj *obj, const std::string &objB_name){
-        if(objB_name == "test"){
+    void onCollision(DynamicObj *self_obj, const Collision coll_info){
+        const std::string objB_name = coll_info.obj->getName();
+
+        if(objB_name == "test") {
+        if(coll_info.collision_side == Collision::Side::LEFT || 
+           coll_info.collision_side == Collision::Side::RIGHT) {
             x_speed *= -1;
+        }
+        if(coll_info.collision_side == Collision::Side::TOP || 
+           coll_info.collision_side == Collision::Side::BOTTOM) {
             y_speed *= -1;
         }
+    }
         
         if(objB_name == "bottomBorder"){
             y_speed = -1;
@@ -55,7 +63,7 @@ public:
         return;
     }
 
-    void onCollision(DynamicObj *obj, const std::string &obj_name){
+    void onCollision(DynamicObj *obj, const Collision coll_info){
         return;
     }
 };

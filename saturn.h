@@ -31,6 +31,7 @@
 
 #include "StaticObj.h"
 #include "DynamicObjBase.h"
+#include "ControlableObjBase.h"
 
 #include <SPI.h>
 #include <Wire.h>
@@ -59,10 +60,10 @@ static const unsigned char PROGMEM logo_bmp[] =
   0b01110000, 0b01110000,
   0b00000000, 0b00110000 };
 
-
 class Saturn
 {
 private:
+    std::vector<std::shared_ptr<ControlableObj>> controlable_objects;
     std::vector<std::shared_ptr<StaticObj>> static_objects;
     std::vector<std::shared_ptr<DynamicObj>> dynamic_objects;
 
@@ -77,11 +78,14 @@ public:
     void add_dynamicObj(const std::shared_ptr<T> &obj_ptr);
     template<typename T>
     void add_staticObj(const std::shared_ptr<T> &obj_ptr);
+    template<typename T>
+    void add_controlableObj(const std::shared_ptr<T> &obj_ptr);
     
     void setGraphicalEnv(Adafruit_SSD1306 *graph_env);
 
-    std::unique_ptr<std::vector<Obj*>> getObjectCollisions(DynamicObj *obj);
+    std::unique_ptr<std::vector<Collision>> getObjectCollisions(DynamicObj *obj);
     bool areObjectsCollided(Obj *objA, Obj *objB);
+    Collision getCollisionInfo(Obj *objA, Obj *objB);
 
     void update_frame(void);
 
@@ -100,6 +104,13 @@ void Saturn::add_staticObj(const std::shared_ptr<T> &obj_ptr){
     static_assert(std::is_base_of<StaticObj, T>::value,
                         "Argument failed check for inheritence from StaticObj");
     this->static_objects.push_back(obj_ptr);
+}
+
+template<typename T>
+void Saturn::add_controlableObj(const std::shared_ptr<T> &obj_ptr){
+    static_assert(std::is_base_of<ControlableObj, T>::value,
+                        "Argument failed check for inheritence from StaticObj");
+    this->controlable_objects.push_back(obj_ptr);
 }
 
 #endif

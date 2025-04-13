@@ -1,13 +1,17 @@
 #ifndef _ControlableObj_H_
 #define _ControlableObj_H_
 
-class ControlableObj
+#include "DynamicObj.h"
+
+class ControlableObj : public DynamicObj
 {
 private:
     /* data */
 public:
-    ControlableObj(/* args */);
-    ~ControlableObj();
+    ControlableObj(const std::string &name) 
+        : DynamicObj(name){
+    };
+    virtual ~ControlableObj() override;
 };
 
 #endif

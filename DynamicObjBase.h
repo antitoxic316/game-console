@@ -20,8 +20,8 @@ public:
             }
         );
         setCollisionCallback(
-            [this](DynamicObj *obj, const std::string &obj_name){
-                static_cast<Derived*>(this)->onCollision(obj, obj_name);
+            [this](DynamicObj *obj, const Collision coll_info){
+                static_cast<Derived*>(this)->onCollision(obj, coll_info);
             }
         );
     };

@@ -12,7 +12,7 @@ public:
     }
     virtual ~IDynamicObj() = default;
     virtual void onFramePassed(DynamicObj *obj) = 0;
-    virtual void onCollision(DynamicObj*, const std::string&) = 0;
+    virtual void onCollision(DynamicObj*, Collision coll_info) = 0;
 };
 
 #endif

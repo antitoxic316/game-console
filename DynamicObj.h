@@ -6,10 +6,15 @@
 #include "functional"
 #include "string"
 
+struct Collision{
+    Obj *obj;
+    enum class Side { TOP, BOTTOM, LEFT, RIGHT} collision_side;
+};
+
 class DynamicObj : public Obj
 {
 private:
-    std::function<void(DynamicObj *, const std::string&)> collisionCallback;
+    std::function<void(DynamicObj *, const Collision coll_info)> collisionCallback;
     std::function<void(DynamicObj *)> framePassedCallback;
 public:
     DynamicObj(const std::string &name);
@@ -19,11 +24,11 @@ public:
         this->framePassedCallback(this);
     }
 
-    void onCollision(const std::string& obj_name){
-        this->collisionCallback(this, obj_name);
+    void onCollision(const Collision coll_info){
+        this->collisionCallback(this, coll_info);
     }
 
-    void setCollisionCallback(std::function<void(DynamicObj *, const std::string&)> collisionCallback){
+    void setCollisionCallback(std::function<void(DynamicObj *, const Collision coll_info)> collisionCallback){
         this->collisionCallback = collisionCallback;
     }
 
