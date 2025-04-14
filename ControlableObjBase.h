@@ -12,7 +12,11 @@ class ControlableObjBase : public ControlableObj, public IControlableObj
 private:
 public:
     ControlableObjBase(const std::string name)
-        :ControlableObj(name){
+        :ControlableObj(name)
+    {
+        this->setKeyInputCallback([this](ControlableObj *obj, const ControlKeys key){
+            static_cast<Derived*>(this)->onKeyInput(obj, key);
+        });
     }
     ~ControlableObjBase() override = default;
 };

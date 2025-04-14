@@ -3,14 +3,28 @@
 
 #include "DynamicObj.h"
 
-class ControlableObj : public DynamicObj
+#include <unordered_map>
+enum ControlKeys {
+    UP, DOWN, LEFT, RIGHT
+};
+
+class ControlableObj : public Obj
 {
 private:
-    /* data */
+    std::unordered_map<uint8_t, ControlKeys> key_map;
+    std::function<void(ControlableObj*, ControlKeys)> keyInputCallback;
 public:
     ControlableObj(const std::string &name) 
-        : DynamicObj(name){
+        : Obj(name){
     };
+
+    void onKeyInput(ControlKeys key){
+        this->keyInputCallback(this, key);
+    }
+    void setKeyInputCallback(std::function<void(ControlableObj*, ControlKeys)> keyInputCallback){
+        this->keyInputCallback = keyInputCallback;
+    }
+
     virtual ~ControlableObj() override;
 };
 

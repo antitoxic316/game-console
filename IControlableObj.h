@@ -8,10 +8,11 @@ class IControlableObj
 private:
     /* data */
 public:
-    IControlableObj(/* args */){
+    IControlableObj(){
         
     }
     virtual ~IControlableObj() = default;
+    virtual void onKeyInput(ControlableObj *obj_self, ControlKeys key) = 0;
 };
 
 #endif

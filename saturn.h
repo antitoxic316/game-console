@@ -33,6 +33,8 @@
 #include "DynamicObjBase.h"
 #include "ControlableObjBase.h"
 
+#include "CircularBuffer.h"
+
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>
@@ -60,6 +62,9 @@ static const unsigned char PROGMEM logo_bmp[] =
   0b01110000, 0b01110000,
   0b00000000, 0b00110000 };
 
+
+extern const std::unordered_map<uint8_t, ControlKeys> DEFAULT_KEY_MAPPING;
+
 class Saturn
 {
 private:
@@ -68,6 +73,8 @@ private:
     std::vector<std::shared_ptr<DynamicObj>> dynamic_objects;
 
     Adafruit_SSD1306 *graph_env;
+
+    circular_buffer<uint8_t, 64> inputBuffer;
 
     int frame_rate = 25;
 public:
@@ -80,6 +87,8 @@ public:
     void add_staticObj(const std::shared_ptr<T> &obj_ptr);
     template<typename T>
     void add_controlableObj(const std::shared_ptr<T> &obj_ptr);
+
+    void processInput();
     
     void setGraphicalEnv(Adafruit_SSD1306 *graph_env);
 
