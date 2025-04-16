@@ -33,8 +33,10 @@
 #include "DynamicObjBase.h"
 #include "ControlableObjBase.h"
 
+
 #include "CircularBuffer.h"
 
+#include <SoftwareSerial.h>
 #include <SPI.h>
 #include <Wire.h>
 #include <Adafruit_GFX.h>

@@ -11,6 +11,13 @@ class circular_buffer
 
 	void put(T item) noexcept
 	{
+        
+        //TODO later create different function
+        if(buf_[head_-1] == item){
+            return;
+        }
+        //TODO
+
 		buf_[head_] = item;
 
 		if(full_)
@@ -32,6 +39,10 @@ class circular_buffer
 
 		// Read data and advance the tail (we now have a free space)
 		auto val = buf_[tail_];
+        
+        //CHANGE HERE
+        buf_[tail_] = 0;
+
 		full_ = false;
 		tail_ = (tail_ + 1) % TElemCount;
 

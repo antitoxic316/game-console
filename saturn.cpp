@@ -1,10 +1,10 @@
 #include "saturn.h"
 
 const std::unordered_map<uint8_t, ControlKeys> DEFAULT_KEY_MAPPING = {
-    {1, ControlKeys::LEFT},
-    {2, ControlKeys::RIGHT},
-    {4, ControlKeys::UP},
-    {8, ControlKeys::DOWN}
+    {1, ControlKeys::LEFT_PRESSED},
+    {2, ControlKeys::RIGHT_PRESSED},
+    {4, ControlKeys::UP_PRESSED},
+    {8, ControlKeys::DOWN_PRESSED}
 };
 
 Saturn::Saturn(){
@@ -61,10 +61,12 @@ void Saturn::processInput(){
         return;
     }
     for(auto &obj: this->controlable_objects){
-        ControlKeys key = DEFAULT_KEY_MAPPING.at(input);
-        if(!key){
+        //TODO change DEFAULT_KEY_MAPPIND to object specific mapping
+        auto key_binding = DEFAULT_KEY_MAPPING.find(input);
+        if(key_binding == DEFAULT_KEY_MAPPING.end()){
             return;
         }
+        ControlKeys key = DEFAULT_KEY_MAPPING.at(input);
         obj->onKeyInput(key);
     }
 }
@@ -183,18 +185,16 @@ Collision Saturn::getCollisionInfo(Obj *objA, Obj *objB){
 }
 
 void Saturn::start(){
-    Serial.begin(9600);
+    SoftwareSerial sSerial(0, 1);
+    sSerial.begin(9600);
     delay(100);
 
     ulong start_time = millis();
 
     while(true){
-        if(Serial.available()) {
+        uint8_t b_control = (uint8_t)sSerial.read();
+        if(b_control != 0){
             
-            uint8_t b_control = Serial.read();
-            Serial.print("Received: ");
-            Serial.println(b_control);
-            this->inputBuffer.put(b_control);
         }
 
         ulong current_time = millis();
@@ -202,7 +202,5 @@ void Saturn::start(){
             start_time = current_time;
             this->update_frame();    
         }
-
-        delay(1);
     }
 }
