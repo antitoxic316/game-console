@@ -28,13 +28,10 @@
 #include <algorithm>
 #include <memory>
 #include <ctime>
-
+#include <queue>
 #include "StaticObj.h"
 #include "DynamicObjBase.h"
 #include "ControlableObjBase.h"
-
-
-#include "CircularBuffer.h"
 
 #include <SoftwareSerial.h>
 #include <SPI.h>
@@ -64,9 +61,6 @@ static const unsigned char PROGMEM logo_bmp[] =
   0b01110000, 0b01110000,
   0b00000000, 0b00110000 };
 
-
-extern const std::unordered_map<uint8_t, ControlKeys> DEFAULT_KEY_MAPPING;
-
 class Saturn
 {
 private:
@@ -76,12 +70,12 @@ private:
 
     Adafruit_SSD1306 *graph_env;
 
-    circular_buffer<uint8_t, 64> inputBuffer;
+    std::queue<uint8_t> inputQueue;
 
     int frame_rate = 25;
 public:
-    Saturn();
-    ~Saturn();
+    Saturn(){};
+    ~Saturn(){};
 
     template<typename T>
     void add_dynamicObj(const std::shared_ptr<T> &obj_ptr);

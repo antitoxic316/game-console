@@ -19,7 +19,7 @@ Dummygame::Dummygame()
     ralsei_obj->setBitmap(ralsei_bitmap, 24, 24);
     this->game_env.add_dynamicObj(ralsei_obj);
 
-    std::shared_ptr<dummyPlayerObj> player_obj = std::make_shared<dummyPlayerObj>("player");
+    std::shared_ptr<dummyPlayerObj> player_obj = std::make_shared<dummyPlayerObj>("player", DEFAULT_KEY_MAPPING);
     player_obj->setBitmap(ralsei_bitmap, 24, 24);
     player_obj->move(94, 0);
     this->game_env.add_controlableObj(player_obj);

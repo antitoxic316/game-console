@@ -6,15 +6,15 @@
 
 #include "IControlableObj.h"
 
-template<class Derived>
-class ControlableObjBase : public ControlableObj, public IControlableObj
+template<class Derived, typename KeysEnum>
+class ControlableObjBase : public ControlableObj<KeysEnum>, public IControlableObj<KeysEnum>
 {
 private:
 public:
-    ControlableObjBase(const std::string name)
-        :ControlableObj(name)
+    ControlableObjBase(const std::string &name, std::unordered_map<uint8_t, KeysEnum> &keyMap)
+        :ControlableObj(name, keyMap)
     {
-        this->setKeyInputCallback([this](ControlableObj *obj, const ControlKeys key){
+        this->setKeyInputCallback([this](ControlableObj *obj, const KeysEnum key){
             static_cast<Derived*>(this)->onKeyInput(obj, key);
         });
     }

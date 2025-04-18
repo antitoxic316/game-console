@@ -1,20 +1,5 @@
 #include "saturn.h"
 
-const std::unordered_map<uint8_t, ControlKeys> DEFAULT_KEY_MAPPING = {
-    {1, ControlKeys::LEFT_PRESSED},
-    {2, ControlKeys::RIGHT_PRESSED},
-    {4, ControlKeys::UP_PRESSED},
-    {8, ControlKeys::DOWN_PRESSED}
-};
-
-Saturn::Saturn(){
-
-}
-
-Saturn::~Saturn(){
-    
-}
-
 void Saturn::update_frame(void){
     this->graph_env->clearDisplay();
 
@@ -56,18 +41,13 @@ skip_drawing_object:
 }
 
 void Saturn::processInput(){
-    uint8_t input = this->inputBuffer.get();
+    uint8_t input = this->inputQueue.front();
     if(!input){
         return;
     }
+    this->inputQueue.pop();
     for(auto &obj: this->controlable_objects){
-        //TODO change DEFAULT_KEY_MAPPIND to object specific mapping
-        auto key_binding = DEFAULT_KEY_MAPPING.find(input);
-        if(key_binding == DEFAULT_KEY_MAPPING.end()){
-            return;
-        }
-        ControlKeys key = DEFAULT_KEY_MAPPING.at(input);
-        obj->onKeyInput(key);
+        obj->onKeyInput(input);
     }
 }
 
@@ -194,7 +174,7 @@ void Saturn::start(){
     while(true){
         uint8_t b_control = (uint8_t)sSerial.read();
         if(b_control != 0){
-            
+            this->inputQueue.push(b_control);
         }
 
         ulong current_time = millis();

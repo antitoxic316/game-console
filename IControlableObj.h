@@ -3,6 +3,7 @@
 
 #include "ControlableObj.h"
 
+template<typename KeysEnum>
 class IControlableObj
 {
 private:
@@ -12,7 +13,7 @@ public:
         
     }
     virtual ~IControlableObj() = default;
-    virtual void onKeyInput(ControlableObj *obj_self, ControlKeys key) = 0;
+    virtual void onKeyInput(ControlableObj *obj_self, KeysEnum key) = 0;
 };
 
 #endif
