@@ -14,25 +14,25 @@ struct Collision{
 class DynamicObj : public Obj
 {
 private:
-    std::function<void(DynamicObj *, const Collision coll_info)> collisionCallback;
-    std::function<void(DynamicObj *)> framePassedCallback;
+    std::function<void(const Collision coll_info)> collisionCallback;
+    std::function<void()> framePassedCallback;
 public:
     DynamicObj(const std::string &name);
     virtual ~DynamicObj() override;
 
     void onFramePassed(){
-        this->framePassedCallback(this);
+        this->framePassedCallback();
     }
 
     void onCollision(const Collision coll_info){
-        this->collisionCallback(this, coll_info);
+        this->collisionCallback(coll_info);
     }
 
-    void setCollisionCallback(std::function<void(DynamicObj *, const Collision coll_info)> collisionCallback){
+    void setCollisionCallback(std::function<void(const Collision coll_info)> collisionCallback){
         this->collisionCallback = collisionCallback;
     }
 
-    void setFramePassedCallback(std::function<void(DynamicObj *)> framePassedCallback){
+    void setFramePassedCallback(std::function<void()> framePassedCallback){
         this->framePassedCallback = framePassedCallback;
     }
 };

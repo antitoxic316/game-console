@@ -11,8 +11,8 @@ public:
 
     }
     virtual ~IDynamicObj() = default;
-    virtual void onFramePassed(DynamicObj *obj) = 0;
-    virtual void onCollision(DynamicObj*, Collision coll_info) = 0;
+    virtual void onFramePassed() = 0;
+    virtual void onCollision(Collision coll_info) = 0;
 };
 
 #endif

@@ -1,6 +1,13 @@
+#ifndef _ControlsHandlers_H_
+#define _ControlsHandlers_H_
+
 #include <unordered_map>
 #include <cstdint>
 #include <type_traits>
+
+
+#include <Arduino.h>
+
 
 enum DefaultControlKeys {
     UP, DOWN, LEFT, RIGHT
@@ -33,7 +40,7 @@ public:
     }
 
     void processInputByte(uint8_t input);
-    
+
     std::unordered_map<KeysEnum, bool> getKeysState(){
         return this->pressed_keys;
     }
@@ -46,8 +53,40 @@ ControlsHandler<KeysEnum>::generatePressedKeysVector(std::unordered_map<uint8_t,
     std::unordered_map<KeysEnum, bool> pressed_keys;
 
     for(auto &it: keyMap){
-        pressed_keys.insert(it.first, false);
+        pressed_keys.insert({it.second, false});
     }
 
     return pressed_keys;
 }
+
+template<typename KeysEnum>
+void ControlsHandler<KeysEnum>::processInputByte(uint8_t input){
+    Serial.begin(19200);
+    delay(100);
+
+    bool unpress_command = false;
+
+    auto key_binding = this->key_map.find(input);
+    if(key_binding == this->key_map.end()){
+        // check if command is reversed, then it's byte for unpressed key
+        auto key_binding = this->key_map.find(!input);
+        if(key_binding == this->key_map.end()){
+            return;
+        } else {
+            unpress_command = true;
+        }
+    }
+    if(!unpress_command){
+        KeysEnum key = this->key_map.at(input);
+        this->pressed_keys[key] = true;
+
+        Serial.println(key);
+    } else {
+        KeysEnum key = this->key_map.at(!input);
+        this->pressed_keys[key] = false;
+
+        Serial.println(key);
+    }
+}
+
+#endif

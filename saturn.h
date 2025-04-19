@@ -29,6 +29,7 @@
 #include <memory>
 #include <ctime>
 #include <queue>
+
 #include "StaticObj.h"
 #include "DynamicObjBase.h"
 #include "ControlableObjBase.h"
@@ -64,7 +65,8 @@ static const unsigned char PROGMEM logo_bmp[] =
 class Saturn
 {
 private:
-    std::vector<std::shared_ptr<ControlableObj>> controlable_objects;
+    std::vector<std::shared_ptr<IControlableAbstr>> controlable_objects;
+
     std::vector<std::shared_ptr<StaticObj>> static_objects;
     std::vector<std::shared_ptr<DynamicObj>> dynamic_objects;
 
@@ -107,14 +109,14 @@ void Saturn::add_dynamicObj(const std::shared_ptr<T> &obj_ptr){
 template<typename T>
 void Saturn::add_staticObj(const std::shared_ptr<T> &obj_ptr){
     static_assert(std::is_base_of<StaticObj, T>::value,
-                        "Argument failed check for inheritence from StaticObj");
+                        "Argument failed check for inheritence from DynamicObj");
     this->static_objects.push_back(obj_ptr);
 }
 
 template<typename T>
 void Saturn::add_controlableObj(const std::shared_ptr<T> &obj_ptr){
-    static_assert(std::is_base_of<ControlableObj, T>::value,
-                        "Argument failed check for inheritence from StaticObj");
+    static_assert(std::is_base_of<IControlableAbstr, T>::value,
+                        "Argument failed check for inheritence from IControlableAbstr");
     this->controlable_objects.push_back(obj_ptr);
 }
 

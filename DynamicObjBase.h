@@ -15,13 +15,13 @@ public:
         : DynamicObj(name)
     {
         setFramePassedCallback(
-            [this](DynamicObj *obj){
-                static_cast<Derived*>(this)->onFramePassed(obj);
+            [this](){
+                static_cast<Derived*>(this)->onFramePassed();
             }
         );
         setCollisionCallback(
-            [this](DynamicObj *obj, const Collision coll_info){
-                static_cast<Derived*>(this)->onCollision(obj, coll_info);
+            [this](const Collision coll_info){
+                static_cast<Derived*>(this)->onCollision(coll_info);
             }
         );
     };

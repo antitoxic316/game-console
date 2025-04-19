@@ -12,13 +12,13 @@ public:
     dummyObj(const std::string &name)
     : DynamicObjBase(name){
     }
-    ~dummyObj();
+    ~dummyObj() = default;
 
-    void onFramePassed(DynamicObj *self_obj){
+    void onFramePassed(){
         this->move(this->getX() + x_speed, this->getY() + y_speed);
     }
 
-    void onCollision(DynamicObj *self_obj, const Collision coll_info){
+    void onCollision(const Collision coll_info){
         const std::string objB_name = coll_info.obj->getName();
 
         if(objB_name == "player") {

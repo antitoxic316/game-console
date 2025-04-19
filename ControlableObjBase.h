@@ -11,12 +11,14 @@ class ControlableObjBase : public ControlableObj<KeysEnum>, public IControlableO
 {
 private:
 public:
-    ControlableObjBase(const std::string &name, std::unordered_map<uint8_t, KeysEnum> &keyMap)
-        :ControlableObj(name, keyMap)
+    ControlableObjBase(const std::string &name, std::unordered_map<uint8_t, KeysEnum> keyMap)
+        :ControlableObj<KeysEnum>(name, keyMap)
     {
-        this->setKeyInputCallback([this](ControlableObj *obj, const KeysEnum key){
-            static_cast<Derived*>(this)->onKeyInput(obj, key);
-        });
+        this->setKeyInputCallback(
+            [this](const KeysEnum key){
+                static_cast<Derived*>(this)->onKeyInput(key);
+            }
+        );
     }
     ~ControlableObjBase() override = default;
 };

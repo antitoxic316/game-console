@@ -47,7 +47,7 @@ void Saturn::processInput(){
     }
     this->inputQueue.pop();
     for(auto &obj: this->controlable_objects){
-        obj->onKeyInput(input);
+        obj->onAbstractKeyInput(input);
     }
 }
 
@@ -168,13 +168,16 @@ void Saturn::start(){
     SoftwareSerial sSerial(0, 1);
     sSerial.begin(9600);
     delay(100);
+    Serial.begin(19200);
+    delay(100);
 
     ulong start_time = millis();
 
     while(true){
-        uint8_t b_control = (uint8_t)sSerial.read();
-        if(b_control != 0){
-            this->inputQueue.push(b_control);
+        int b_control = sSerial.read();
+        if(b_control == 1){
+            this->inputQueue.push((uint8_t)b_control);
+            Serial.println(this->inputQueue.size());
         }
 
         ulong current_time = millis();
@@ -182,5 +185,6 @@ void Saturn::start(){
             start_time = current_time;
             this->update_frame();    
         }
+        delay(1);
     }
 }
