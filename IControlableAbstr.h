@@ -5,11 +5,11 @@
 
 #include "Obj.h"
 
-class IControlableAbstr : public Obj
+class IControlableAbstr
 {
 private:
 public:
-    IControlableAbstr(const std::string &name) : Obj(name){
+    IControlableAbstr(){
 
     };
     virtual ~IControlableAbstr() = default;

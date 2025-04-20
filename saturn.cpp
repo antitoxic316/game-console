@@ -28,15 +28,6 @@ skip_drawing_object:
         }
     }
 
-    for(auto &obj: this->controlable_objects){
-        
-        this->graph_env->drawBitmap(
-            obj->getX(), obj->getY(),
-            obj->getBitmap(),
-            obj->getWidth(), obj->getHeight(),
-            1);
-    }
-
     this->graph_env->display();
 }
 
@@ -80,13 +71,6 @@ std::unique_ptr<std::vector<Collision>> Saturn::getObjectCollisions(DynamicObj *
     for(auto &static_obj_p: this->static_objects){
         if(this->areObjectsCollided(obj, static_obj_p.get())){
             Collision coll_info = this->getCollisionInfo(obj, static_obj_p.get());
-            collided_objs->push_back(coll_info);
-        }
-    }
-
-    for(auto &controlable_obj_p: this->controlable_objects){
-        if(this->areObjectsCollided(obj, controlable_obj_p.get())){
-            Collision coll_info = this->getCollisionInfo(obj, controlable_obj_p.get());
             collided_objs->push_back(coll_info);
         }
     }
@@ -175,7 +159,7 @@ void Saturn::start(){
 
     while(true){
         int b_control = sSerial.read();
-        if(b_control == 1){
+        if(b_control > 0){
             this->inputQueue.push((uint8_t)b_control);
             Serial.println(this->inputQueue.size());
         }

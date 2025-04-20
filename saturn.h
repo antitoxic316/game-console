@@ -118,6 +118,11 @@ void Saturn::add_controlableObj(const std::shared_ptr<T> &obj_ptr){
     static_assert(std::is_base_of<IControlableAbstr, T>::value,
                         "Argument failed check for inheritence from IControlableAbstr");
     this->controlable_objects.push_back(obj_ptr);
+
+    // for rendering and collisions and more
+    static_assert(std::is_base_of<DynamicObj, T>::value,
+                        "Argument failed check for inheritence from IControlableAbstr");
+    this->dynamic_objects.push_back(obj_ptr);
 }
 
 #endif

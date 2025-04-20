@@ -69,7 +69,7 @@ void ControlsHandler<KeysEnum>::processInputByte(uint8_t input){
     auto key_binding = this->key_map.find(input);
     if(key_binding == this->key_map.end()){
         // check if command is reversed, then it's byte for unpressed key
-        auto key_binding = this->key_map.find(!input);
+        auto key_binding = this->key_map.find(~input);
         if(key_binding == this->key_map.end()){
             return;
         } else {
@@ -82,7 +82,7 @@ void ControlsHandler<KeysEnum>::processInputByte(uint8_t input){
 
         Serial.println(key);
     } else {
-        KeysEnum key = this->key_map.at(!input);
+        KeysEnum key = this->key_map.at(~input);
         this->pressed_keys[key] = false;
 
         Serial.println(key);

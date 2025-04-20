@@ -7,7 +7,7 @@
 #include "IControlableAbstr.h"
 
 template<typename KeysEnum>
-class ControlableObj : public IControlableAbstr
+class ControlableObj : public IControlableAbstr, public DynamicObj
 {
 private:
     std::function<void(KeysEnum)> keyInputCallback;
@@ -19,8 +19,12 @@ public:
         std::unordered_map<uint8_t, KeysEnum> keyMap
     ) 
         : controlsHandler(keyMap),
-          IControlableAbstr(name){
-    };
+          DynamicObj(name)
+    {
+        setFramePassedCallback([this](){
+            this->onFramePassed();
+        });
+    }
 
     void onAbstractKeyInput(uint8_t inputByte) override {
         this->onKeyInput(inputByte);
@@ -28,6 +32,9 @@ public:
 
     void onKeyInput(uint8_t input_byte){
         this->controlsHandler.processInputByte(input_byte);
+    }
+
+    void onFramePassed(){
         auto key_states = this->controlsHandler.getKeysState();
         for(auto key_state: key_states){
             if(key_state.second){
