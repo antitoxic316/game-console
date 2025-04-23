@@ -1,5 +1,7 @@
 #include "saturn.h"
 
+#include <cmath>
+
 void Saturn::update_frame(void){
     this->graph_env->clearDisplay();
 
@@ -24,6 +26,24 @@ skip_drawing_object:
         }
 
         for(auto obj_collision: *obj_colls){
+            if(obj_collision.obj->isMovable() && obj->isMovable()){
+                double dispositionX = (double)obj_collision.penetrationDepth.x / 2.0;
+                if (dispositionX < 0){
+                    dispositionX = std::floor(dispositionX);
+                } else if (dispositionX > 0) {
+                    dispositionX = std::ceil(dispositionX);
+                }
+                double dispositionY = (double)obj_collision.penetrationDepth.y / 2.0;
+                if (dispositionY < 0){
+                    dispositionY = std::floor(dispositionY);
+                } else if (dispositionY > 0) {
+                    dispositionY = std::ceil(dispositionY);
+                }
+                obj->move(
+                    obj->getX() + dispositionX,
+                    obj->getY() + dispositionY
+                );
+            }
             obj->onCollision(obj_collision);
         }
     }
@@ -53,7 +73,7 @@ void Saturn::setGraphicalEnv(Adafruit_SSD1306 *graph_env){
     // Show initial display buffer contents on the screen --
     // the library initializes this with an Adafruit splash screen.
     this->graph_env->display();
-    delay(2000);
+    delay(100);
 
     this->graph_env->clearDisplay();
 }
@@ -62,6 +82,9 @@ std::unique_ptr<std::vector<Collision>> Saturn::getObjectCollisions(DynamicObj *
     auto collided_objs = std::make_unique<std::vector<Collision>>();
     
     for(auto &dynamic_obj_p: this->dynamic_objects){
+        if(dynamic_obj_p.get()->getName() == obj->getName()){
+            continue;
+        }
         if(this->areObjectsCollided(obj, dynamic_obj_p.get())){
             Collision coll_info = this->getCollisionInfo(obj, dynamic_obj_p.get());
             collided_objs->push_back(coll_info);
@@ -105,6 +128,8 @@ bool Saturn::areObjectsCollided(Obj *objA, Obj *objB){
 }
 
 Collision Saturn::getCollisionInfo(Obj *objA, Obj *objB){
+    Collision coll_info;
+
     int objALeftBorder = objA->getX();
     int objARightBorder = objA->getX() + objA->getWidth();
     int objATopBorder = objA->getY();
@@ -115,34 +140,34 @@ Collision Saturn::getCollisionInfo(Obj *objA, Obj *objB){
     int objBTopBorder = objB->getY();
     int objBBottomBorder = objB->getY() + objB->getHeight();
 
-    int overlapLeft = objARightBorder - objBLeftBorder;
-    int overlapRight = objBRightBorder - objALeftBorder;
-    int overlapTop = objABottomBorder - objBTopBorder;
-    int overlapBottom = objBBottomBorder - objATopBorder;
-
-    Collision coll_info;
     coll_info.obj = objB;
 
-    if (overlapLeft > 0 && overlapRight > 0 && overlapTop > 0 && overlapBottom > 0) {
-        int aCenterX = (objALeftBorder + objARightBorder) / 2;
-        int aCenterY = (objATopBorder + objABottomBorder) / 2;
-        int bCenterX = (objBLeftBorder + objBRightBorder) / 2;
-        int bCenterY = (objBTopBorder + objBBottomBorder) / 2;
+    int overlapX = std::min(objARightBorder, objBRightBorder) - std::max(objALeftBorder, objBLeftBorder);
+    int overlapY = std::min(objABottomBorder, objBBottomBorder) - std::max(objATopBorder, objBTopBorder);
 
-        // Calculate direction vector from A to B
-        int dx = bCenterX - aCenterX;
-        int dy = bCenterY - aCenterY;
+    int objACenterX = (objALeftBorder + objARightBorder) / 2;
+    int objACenterY = (objATopBorder + objABottomBorder) / 2;
+    int objBCenterX = (objBLeftBorder + objBRightBorder) / 2;
+    int objBCenterY = (objBTopBorder + objBBottomBorder) / 2;
 
-        // Determine primary collision axis
-        if (abs(dx) > abs(dy)) {
-            // Horizontal collision dominant
-            coll_info.collision_side = (dx > 0) ? 
-                Collision::Side::RIGHT : Collision::Side::LEFT;
+    if (overlapX < overlapY) {
+        if(objACenterX < objBCenterX){
+            coll_info.collision_side = Collision::Side::RIGHT;
+            coll_info.penetrationDepth.x = -overlapX;
         } else {
-            // Vertical collision dominant
-            coll_info.collision_side = (dy > 0) ? 
-                Collision::Side::BOTTOM : Collision::Side::TOP;
+            coll_info.collision_side = Collision::Side::LEFT;
+            coll_info.penetrationDepth.x = overlapX;
         }
+        coll_info.penetrationDepth.y = 0;
+    } else {
+        if(objACenterY < objBCenterY) {
+            coll_info.collision_side = Collision::Side::BOTTOM;
+            coll_info.penetrationDepth.y = -overlapY;
+        } else {
+            coll_info.collision_side = Collision::Side::TOP;
+            coll_info.penetrationDepth.y = overlapY;
+        }
+        coll_info.penetrationDepth.x = 0;
     }
 
     return coll_info;
@@ -161,7 +186,6 @@ void Saturn::start(){
         int b_control = sSerial.read();
         if(b_control > 0){
             this->inputQueue.push((uint8_t)b_control);
-            Serial.println(this->inputQueue.size());
         }
 
         ulong current_time = millis();

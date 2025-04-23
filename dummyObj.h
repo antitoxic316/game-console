@@ -1,12 +1,14 @@
 #ifndef _dummyObj_H_
 #define _dummyObj_H_
 
+#include <Arduino.h>
+
 #include "saturn.h"
 
 class dummyObj : public DynamicObjBase<dummyObj>
 {
 private:
-    int x_speed = 2;
+    int x_speed = 1;
     int y_speed = 1;
 public:
     dummyObj(const std::string &name)
@@ -20,7 +22,11 @@ public:
 
     void onCollision(const Collision coll_info){
         const std::string objB_name = coll_info.obj->getName();
-
+        /*
+        Serial.println(coll_info.penetrationDepth.x);
+        Serial.println(coll_info.penetrationDepth.y);
+        Serial.println("pum0");
+        */
         if(objB_name == "player") {
             if(coll_info.collision_side == Collision::Side::LEFT || 
             coll_info.collision_side == Collision::Side::RIGHT) {
@@ -33,16 +39,16 @@ public:
         }
         
         if(objB_name == "bottomBorder"){
-            y_speed = -1;
+            y_speed *= -1;
         }
         if(objB_name == "topBorder"){
-            y_speed = 1;
+            y_speed *= -1;
         }
         if(objB_name == "leftBorder"){
-            x_speed = 1;
+            x_speed *= -1;
         }
         if(objB_name == "rightBorder"){
-            x_speed = -1;
+            x_speed *= -1;
         }
     }
 };

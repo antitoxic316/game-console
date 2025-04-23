@@ -6,9 +6,6 @@
 #include <type_traits>
 
 
-#include <Arduino.h>
-
-
 enum DefaultControlKeys {
     UP, DOWN, LEFT, RIGHT
 };
@@ -61,9 +58,6 @@ ControlsHandler<KeysEnum>::generatePressedKeysVector(std::unordered_map<uint8_t,
 
 template<typename KeysEnum>
 void ControlsHandler<KeysEnum>::processInputByte(uint8_t input){
-    Serial.begin(19200);
-    delay(100);
-
     bool unpress_command = false;
 
     auto key_binding = this->key_map.find(input);
@@ -79,13 +73,9 @@ void ControlsHandler<KeysEnum>::processInputByte(uint8_t input){
     if(!unpress_command){
         KeysEnum key = this->key_map.at(input);
         this->pressed_keys[key] = true;
-
-        Serial.println(key);
     } else {
         KeysEnum key = this->key_map.at(~input);
         this->pressed_keys[key] = false;
-
-        Serial.println(key);
     }
 }
 

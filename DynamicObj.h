@@ -6,9 +6,17 @@
 #include "functional"
 #include "string"
 
+struct Vec2
+{
+    int x;
+    int y;
+};
+
+
 struct Collision{
     Obj *obj;
     enum class Side { TOP, BOTTOM, LEFT, RIGHT} collision_side;
+    Vec2 penetrationDepth;
 };
 
 class DynamicObj : public Obj
