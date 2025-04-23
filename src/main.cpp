@@ -1,4 +1,4 @@
-#include "dummygame.h"
+#include <DummyGame.h>
 
 void setup() {
   Dummygame game;

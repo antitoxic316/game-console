@@ -1,9 +1,7 @@
 #ifndef _dummyObj_H_
 #define _dummyObj_H_
 
-#include <Arduino.h>
-
-#include "saturn.h"
+#include <Saturn.h>
 
 class dummyObj : public DynamicObjBase<dummyObj>
 {
@@ -22,11 +20,6 @@ public:
 
     void onCollision(const Collision coll_info){
         const std::string objB_name = coll_info.obj->getName();
-        /*
-        Serial.println(coll_info.penetrationDepth.x);
-        Serial.println(coll_info.penetrationDepth.y);
-        Serial.println("pum0");
-        */
         if(objB_name == "player") {
             if(coll_info.collision_side == Collision::Side::LEFT || 
             coll_info.collision_side == Collision::Side::RIGHT) {

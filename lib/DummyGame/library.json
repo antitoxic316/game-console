@@ -1,0 +1,10 @@
+{
+    "name": "DummyGame",
+    "version": "0.1.0",
+    "dependencies": [
+        {
+        "name": "Saturn",
+        "version": "1.0.0"
+        }
+    ]
+}

@@ -1,4 +1,4 @@
-#include "dummygame.h"
+#include "DummyGame.h"
 
 #include "dummyPlayerObj.h"
 
