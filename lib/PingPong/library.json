@@ -1,0 +1,10 @@
+{
+    "name": "PingPong",
+    "version": "1.0.0",
+    "dependencies": [
+        {
+        "name": "Saturn",
+        "version": "1.0.0"
+        }
+    ]
+}

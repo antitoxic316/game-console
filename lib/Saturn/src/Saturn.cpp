@@ -52,11 +52,10 @@ skip_drawing_object:
 }
 
 void Saturn::processInput(){
-    uint8_t input = this->inputQueue.front();
+    uint8_t input = this->inputHandler_.getInputByte();
     if(!input){
         return;
     }
-    this->inputQueue.pop();
     for(auto &obj: this->controlable_objects){
         obj->onAbstractKeyInput(input);
     }
@@ -174,19 +173,10 @@ Collision Saturn::getCollisionInfo(Obj *objA, Obj *objB){
 }
 
 void Saturn::start(){
-    SoftwareSerial sSerial(0, 1);
-    sSerial.begin(9600);
-    delay(100);
-    Serial.begin(19200);
-    delay(100);
-
     ulong start_time = millis();
 
     while(true){
-        int b_control = sSerial.read();
-        if(b_control > 0){
-            this->inputQueue.push((uint8_t)b_control);
-        }
+        this->inputHandler_.readInput();
 
         ulong current_time = millis();
         if((current_time - start_time) > 1000/this->frame_rate){

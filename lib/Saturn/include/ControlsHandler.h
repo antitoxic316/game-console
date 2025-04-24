@@ -5,13 +5,6 @@
 #include <cstdint>
 #include <type_traits>
 
-
-enum DefaultControlKeys {
-    UP, DOWN, LEFT, RIGHT
-};
-extern const std::unordered_map<uint8_t, DefaultControlKeys> DEFAULT_KEY_MAPPING;
-
-
 template<typename KeysEnum>
 class ControlsHandler
 {

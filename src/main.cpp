@@ -1,7 +1,7 @@
-#include <DummyGame.h>
+#include <PingPong.h>
 
 void setup() {
-  Dummygame game;
+  PingPong game;
   game.start();
 
   Serial.begin(19200);

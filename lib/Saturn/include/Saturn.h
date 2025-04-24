@@ -34,12 +34,11 @@
 #include "DynamicObjBase.h"
 #include "ControlableObjBase.h"
 
-#include <SoftwareSerial.h>
-#include <SPI.h>
-#include <Wire.h>
 #include <Adafruit_I2CDevice.h>
 #include <Adafruit_GFX.h>
 #include <Adafruit_SSD1306.h>
+
+#include <InputHandler.h>
 
 #define SCREEN_ADDRESS 0x3C ///< See datasheet for Address; 0x3D for 128x64, 0x3C for 128x32
 
@@ -72,8 +71,7 @@ private:
     std::vector<std::shared_ptr<DynamicObj>> dynamic_objects;
 
     Adafruit_SSD1306 *graph_env;
-
-    std::queue<uint8_t> inputQueue;
+    InputHandler inputHandler_;
 
     int frame_rate = 25;
 public:
