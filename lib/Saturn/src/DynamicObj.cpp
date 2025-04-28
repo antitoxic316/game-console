@@ -1,11 +1,6 @@
 #include "DynamicObj.h"
 
-DynamicObj::DynamicObj(const std::string &name)
-    : Obj(name),
-    collisionCallback([](const Collision coll_info) {}),
-    framePassedCallback([]() {}){
-}
-
-DynamicObj::~DynamicObj()
-{
+void DynamicObj::emitEvent(const std::string &event_name, void* data){
+    ObjEvent e = {event_name, data};
+    this->eventQueue_.push(e);
 }

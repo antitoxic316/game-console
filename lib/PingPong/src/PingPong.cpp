@@ -21,6 +21,8 @@ PingPong::PingPong()
 {
     this->game_env.setGraphicalEnv(&display);
 
+    this->game_env.addEvent("game over", [this](void *data){ onGameOver(data); });
+
     this->generateScreenBorders(SCREEN_WIDTH, SCREEN_HEIGHT, false, false);
 
     std::shared_ptr<Ball> ball_obj = std::make_shared<Ball>("ball");

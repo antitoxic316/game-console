@@ -21,4 +21,9 @@ public:
 
     void start();
     void generateScreenBorders(int screen_w, int screen_h, bool inside, bool visible);
+
+    void onGameOver(void *player_name){
+        this->game_env.clear();
+        this->game_env.start();
+    }
 };

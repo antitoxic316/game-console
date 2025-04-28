@@ -42,6 +42,7 @@ public:
         }
         if(objB_name == "rightBorder"){
             x_speed *= -1;
+            emitEvent("game over", NULL);
         }
     }
 };

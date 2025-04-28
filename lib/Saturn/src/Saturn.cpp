@@ -19,6 +19,8 @@ void Saturn::update_frame(void){
             1);
 skip_drawing_object:
 
+        this->handleEvents(obj.get());
+
         auto obj_colls = this->getObjectCollisions(obj.get());
 
         if(!obj_colls){
@@ -185,4 +187,10 @@ void Saturn::start(){
         }
         delay(1);
     }
+}
+
+//TODO make more advanced engine restart function
+void Saturn::clear(){
+    this->static_objects.clear();
+    this->dynamic_objects.clear();
 }

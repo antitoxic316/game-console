@@ -17,6 +17,8 @@ Dummygame::Dummygame()
 
     this->generateScreenBorders(SCREEN_WIDTH, SCREEN_HEIGHT, false, false);
 
+    this->game_env.addEvent("game over", [this](void *data){ this->game_env.clear(); });
+
     std::shared_ptr<dummyObj> ralsei_obj = std::make_shared<dummyObj>("ralsei");
     ralsei_obj->setBitmap(ralsei_bitmap, 24, 24);
     this->game_env.add_dynamicObj(ralsei_obj);
