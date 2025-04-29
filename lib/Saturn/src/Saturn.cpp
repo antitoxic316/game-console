@@ -3,7 +3,7 @@
 #include <cmath>
 
 void Saturn::update_frame(void){
-    this->graph_env->clearDisplay();
+    this->graph_env.clearDisplay();
 
     this->processInput();
 
@@ -12,11 +12,11 @@ void Saturn::update_frame(void){
         if(!obj->getBitmap()){
             goto skip_drawing_object;
         }
-        this->graph_env->drawBitmap(
+        this->graph_env.drawBitMap(
             obj->getX(), obj->getY(),
             obj->getBitmap(),
-            obj->getWidth(), obj->getHeight(),
-            1);
+            obj->getWidth(), obj->getHeight()
+        );
 skip_drawing_object:
 
         this->handleEvents(obj.get());
@@ -50,7 +50,7 @@ skip_drawing_object:
         }
     }
 
-    this->graph_env->display();
+    this->graph_env.display();
 }
 
 void Saturn::processInput(){
@@ -61,22 +61,6 @@ void Saturn::processInput(){
     for(auto &obj: this->controlable_objects){
         obj->onAbstractKeyInput(input);
     }
-}
-
-void Saturn::setGraphicalEnv(Adafruit_SSD1306 *graph_env){
-    this->graph_env = graph_env;
-
-    // SSD1306_SWITCHCAPVCC = generate display voltage from 3.3V internally
-    if(!this->graph_env->begin(SSD1306_SWITCHCAPVCC, SCREEN_ADDRESS)) {
-        for(;;); // Don't proceed, loop forever
-    }
-
-    // Show initial display buffer contents on the screen --
-    // the library initializes this with an Adafruit splash screen.
-    this->graph_env->display();
-    delay(100);
-
-    this->graph_env->clearDisplay();
 }
 
 std::unique_ptr<std::vector<Collision>> Saturn::getObjectCollisions(DynamicObj *obj){

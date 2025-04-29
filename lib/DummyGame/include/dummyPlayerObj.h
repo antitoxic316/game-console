@@ -1,7 +1,7 @@
 #ifndef _DUMMYPLAYEROBJ_H_
 #define _DUMMYPLAYEROBJ_H_
 
-#include "ControlableObjBase.h"
+#include <ControlableObjBase.h>
 
 enum DefaultControlKeys {
     UP, DOWN, LEFT, RIGHT

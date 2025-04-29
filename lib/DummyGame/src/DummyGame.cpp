@@ -1,35 +1,5 @@
 #include "DummyGame.h"
 
-#include "dummyPlayerObj.h"
-
-
-
-#define SCREEN_WIDTH 128 // OLED display width, in pixels
-#define SCREEN_HEIGHT 64 // OLED display height, in pixels
-
-#define OLED_RESET    -1 // Reset pin # (or -1 if sharing Arduino reset pin)
-
-Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, OLED_RESET);
-
-Dummygame::Dummygame()
-{
-    this->game_env.setGraphicalEnv(&display);
-
-    this->generateScreenBorders(SCREEN_WIDTH, SCREEN_HEIGHT, false, false);
-
-    this->game_env.addEvent("game over", [this](void *data){ this->game_env.clear(); });
-
-    std::shared_ptr<dummyObj> ralsei_obj = std::make_shared<dummyObj>("ralsei");
-    ralsei_obj->setBitmap(ralsei_bitmap, 24, 24);
-    this->game_env.add_dynamicObj(ralsei_obj);
-
-    std::shared_ptr<dummyPlayerObj> player_obj = std::make_shared<dummyPlayerObj>("player", DEFAULT_KEY_MAPPING);
-    player_obj->setBitmap(ralsei_bitmap, 24, 24);
-    player_obj->move(94, 0);
-    this->game_env.add_controlableObj(player_obj);
-}
-
-
 // TODO: move this function into engine class or some utils class;
 //implement bit map creation
 void Dummygame::generateScreenBorders(int screen_w, int screen_h, bool inside_screen, bool visible){
