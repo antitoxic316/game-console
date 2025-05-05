@@ -13,7 +13,7 @@ public:
         
     }
     virtual ~IControlableObj() = default;
-    virtual void onKeyInput(KeysEnum key) = 0;
+    virtual void onInput(KeysEnum key, InputData input_data) = 0;
 };
 
 #endif

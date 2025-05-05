@@ -11,12 +11,12 @@ static const uint8_t player_bitmap[] PROGMEM  = {
     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
 
-const std::unordered_map<uint8_t, PControlKeys> P1_KEY_MAPPING = {
+const std::unordered_map<uint16_t, PControlKeys> P1_KEY_MAPPING = {
     {1, PControlKeys::UP},
     {2, PControlKeys::DOWN}
 };
 
-const std::unordered_map<uint8_t, PControlKeys> P2_KEY_MAPPING = {
+const std::unordered_map<uint16_t, PControlKeys> P2_KEY_MAPPING = {
     {4, PControlKeys::UP},
     {8, PControlKeys::DOWN}
 };
@@ -55,6 +55,9 @@ public:
     void generateScreenBorders(int screen_w, int screen_h, bool inside, bool visible);
 
     void onGameOver(void *player_name){
+        //draw text
+        delay(500);
+        //restart properly, not this shit below
         this->game_env.clear();
         this->game_env.start();
     }

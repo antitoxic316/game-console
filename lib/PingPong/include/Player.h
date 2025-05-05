@@ -12,11 +12,11 @@ private:
 public:
     Player(
         const std::string &name,
-        std::unordered_map<uint8_t, PControlKeys> keyMap
+        std::unordered_map<uint16_t, PControlKeys> keyMap
     )
         : ControlableObjBase(name, keyMap){
     }
     ~Player() = default;
 
-    void onKeyInput(PControlKeys key);
+    void onInput(PControlKeys key, InputData input_data);
 };

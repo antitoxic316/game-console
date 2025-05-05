@@ -10,15 +10,17 @@ template<typename KeysEnum>
 class ControlableObj : public IControlableAbstr, public DynamicObj
 {
 private:
-    std::function<void(KeysEnum)> keyInputCallback;
+    std::function<void(KeysEnum, InputData)> keyInputCallback;
 
-    ControlsHandler<KeysEnum> controlsHandler;
+    ControlsHandler<KeysEnum> controlsHandler_;
+
+    InputData currentInputData_;
 public:
     ControlableObj(
         const std::string &name,
-        std::unordered_map<uint8_t, KeysEnum> keyMap
+        std::unordered_map<uint16_t, KeysEnum> keyMap
     ) 
-        : controlsHandler(keyMap),
+        : controlsHandler_(keyMap),
           DynamicObj(name)
     {
         setFramePassedCallback([this](){
@@ -26,24 +28,27 @@ public:
         });
     }
 
-    void onAbstractKeyInput(uint8_t inputByte) override {
-        this->onKeyInput(inputByte);
+    void onAbstractInput(InputData input) override {
+        this->onInput(input);
     }
 
-    void onKeyInput(uint8_t input_byte){
-        this->controlsHandler.processInputByte(input_byte);
+    void onInput(InputData input){
+        currentInputData_ = input;
+        this->controlsHandler_.processKeyByte(
+            input.key_byte, input.unpressed_key
+        );
     }
 
     void onFramePassed(){
-        auto key_states = this->controlsHandler.getKeysState();
+        std::unordered_map<KeysEnum, bool> key_states = controlsHandler_.getKeysState();
         for(auto key_state: key_states){
             if(key_state.second){
-                this->keyInputCallback(key_state.first);
+                this->keyInputCallback(key_state.first, currentInputData_);
             }
         }
     }
 
-    void setKeyInputCallback(std::function<void(KeysEnum)> keyInputCallback){
+    void setInputCallback(std::function<void(KeysEnum, InputData)> keyInputCallback){
         this->keyInputCallback = keyInputCallback;
     }
 

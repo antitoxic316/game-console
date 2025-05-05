@@ -54,12 +54,12 @@ skip_drawing_object:
 }
 
 void Saturn::processInput(){
-    uint8_t input = this->inputHandler_.getInputByte();
-    if(!input){
+    InputData input = this->inputHandler_.getInput();
+    if(!input.key_byte){
         return;
     }
     for(auto &obj: this->controlable_objects){
-        obj->onAbstractKeyInput(input);
+        obj->onAbstractInput(input);
     }
 }
 

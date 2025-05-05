@@ -4,6 +4,7 @@
 #include <cstdint>
 
 #include "Obj.h"
+#include <InputHandler.h>
 
 class IControlableAbstr
 {
@@ -13,7 +14,7 @@ public:
 
     };
     virtual ~IControlableAbstr() = default;
-    virtual void onAbstractKeyInput(uint8_t keyByte) = 0;
+    virtual void onAbstractInput(InputData input) = 0;
 };
 
 #endif

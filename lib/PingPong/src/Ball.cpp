@@ -20,12 +20,13 @@ void Ball::onCollision(const Collision coll_info){
         y_speed *= -1;
     }
     if(objB_name == "leftBorder"){
-        // call event for restarting game
         const std::string &event_name = "game over";
-        char *data = "player1";
-        this->emitEvent(event_name, (void*)data);
+        std::string data = "player1";
+        this->emitEvent(event_name, (void*)data.c_str());
     }
     if(objB_name == "rightBorder"){
-        // restart game here
+        const std::string &event_name = "game over";
+        std::string data = "player2";
+        this->emitEvent(event_name, (void*)data.c_str());
     }
 }

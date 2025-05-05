@@ -5,32 +5,35 @@
 #include <cstdint>
 #include <type_traits>
 
+#include <InputHandler.h>
+
 template<typename KeysEnum>
 class ControlsHandler
 {
     static_assert(std::is_enum<KeysEnum>::value, 
-                    "ControlKeysEnum must be the type of enum");
+                    "ControlKeysEnum must be enum");
 private:
-    std::unordered_map<uint8_t, KeysEnum> key_map;
+    std::unordered_map<uint16_t, KeysEnum> key_map;
     std::unordered_map<KeysEnum, bool> pressed_keys;
+    
 
     static std::unordered_map<KeysEnum, bool> 
     generatePressedKeysVector(
-        std::unordered_map<uint8_t, KeysEnum> key_map
+        std::unordered_map<uint16_t, KeysEnum> key_map
     );
 public:
-    ControlsHandler(std::unordered_map<uint8_t, KeysEnum> keyMap)
+    ControlsHandler(std::unordered_map<uint16_t, KeysEnum> keyMap)
         : key_map(keyMap),
           pressed_keys(generatePressedKeysVector(keyMap)){
     };
     ~ControlsHandler() = default;
 
-    void setByteToKeyMap(std::unordered_map<uint8_t, KeysEnum> map){
+    void setByteToKeyMap(std::unordered_map<uint16_t, KeysEnum> map){
         this->key_map = map;
     }
 
-    void processInputByte(uint8_t input);
-
+    void processKeyByte(uint16_t input, bool unpressed);
+    
     std::unordered_map<KeysEnum, bool> getKeysState(){
         return this->pressed_keys;
     }
@@ -38,7 +41,7 @@ public:
 
 template<typename KeysEnum>
 std::unordered_map<KeysEnum, bool> 
-ControlsHandler<KeysEnum>::generatePressedKeysVector(std::unordered_map<uint8_t, KeysEnum> keyMap)
+ControlsHandler<KeysEnum>::generatePressedKeysVector(std::unordered_map<uint16_t, KeysEnum> keyMap)
 {
     std::unordered_map<KeysEnum, bool> pressed_keys;
 
@@ -50,24 +53,16 @@ ControlsHandler<KeysEnum>::generatePressedKeysVector(std::unordered_map<uint8_t,
 }
 
 template<typename KeysEnum>
-void ControlsHandler<KeysEnum>::processInputByte(uint8_t input){
-    bool unpress_command = false;
-
+void ControlsHandler<KeysEnum>::processKeyByte(uint16_t input, bool unpressed){
     auto key_binding = this->key_map.find(input);
     if(key_binding == this->key_map.end()){
-        // check if command is reversed, then it's byte for unpressed key
-        auto key_binding = this->key_map.find(~input);
-        if(key_binding == this->key_map.end()){
-            return;
-        } else {
-            unpress_command = true;
-        }
+        return;
     }
-    if(!unpress_command){
+    if(!unpressed){
         KeysEnum key = this->key_map.at(input);
         this->pressed_keys[key] = true;
     } else {
-        KeysEnum key = this->key_map.at(~input);
+        KeysEnum key = this->key_map.at(input);
         this->pressed_keys[key] = false;
     }
 }
