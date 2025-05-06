@@ -2,10 +2,10 @@
 
 SoftwareSerial sSerial(12,11);
 
-#define LEFT_BYTE 0b0001
-#define RIGHT_BYTE 0b0010
-#define UP_BYTE 0b0100
-#define DOWN_BYTE 0b1000
+uint8_t LEFT_BYTE = 0b00000001;
+uint8_t RIGHT_BYTE = 0b00000010;
+uint8_t UP_BYTE = 0b00000100;
+uint8_t DOWN_BYTE = 0b00001000;
 
 #define PRESSED 0
 #define RELEASED 1
@@ -24,9 +24,9 @@ int down_state = 0;
 int xPosPrev = 512;
 int yPosPrev = 512;
 
-int unpress_button_bit = 1 << 62;
+uint32_t unpress_button_bit = 0x80000000;
 
-void send_data(int data);
+void send_data(uint32_t data);
 
 void setup() {
   pinMode(7, INPUT_PULLUP);
@@ -34,11 +34,13 @@ void setup() {
   sSerial.begin(9600);
   delay(100);
 
-  Serial.begin(9600);
+  Serial.begin(19200);
   delay(100);
 }
 
 void loop() {
+  uint32_t final_data = 0;
+
   left_state = 1;
   right_state = 1;
   up_state = 1;
@@ -48,8 +50,6 @@ void loop() {
   int yPos = analogRead(A0);
   // Read the button state (LOW when pressed due to pull-up resistor)
   int buttonState = digitalRead(7);
-
-  long long final_data = 0;
 
   int x_v = xPos - xPosPrev;
   xPosPrev = xPos;
@@ -88,14 +88,19 @@ void loop() {
 
     final_data |= keys_data;
     send_data(final_data);
+    final_data = 0;
+
+    return;
   }
   if(left_state == RELEASED && left_prev_state == PRESSED){
     keys_data |= LEFT_BYTE;
-    keys_data |= unpress_button_bit;
+    final_data |= unpress_button_bit;
     left_prev_state = left_state;
 
     final_data |= keys_data;
     send_data(final_data);
+
+    return;
   }
 
   if(right_state == PRESSED && right_prev_state == RELEASED){
@@ -104,14 +109,20 @@ void loop() {
 
     final_data |= keys_data;
     send_data(final_data);
+    final_data = 0;
+
+    return;
   }
   if(right_state == RELEASED && right_prev_state == PRESSED){
     keys_data |= RIGHT_BYTE;
-    keys_data |= unpress_button_bit;
+    final_data |= unpress_button_bit;
     right_prev_state = right_state;
 
     final_data |= keys_data;
     send_data(final_data);
+    final_data = 0;
+
+    return;
   }
 
   if(up_state == PRESSED && up_prev_state == RELEASED){
@@ -120,15 +131,17 @@ void loop() {
 
     final_data |= keys_data;
     send_data(final_data);
+    return;
   }
   if(up_state == RELEASED && up_prev_state == PRESSED){
     keys_data |= UP_BYTE;
-    keys_data |= unpress_button_bit;
+    final_data |= unpress_button_bit;
     up_prev_state = up_state;
 
     final_data |= keys_data;
-
     send_data(final_data);
+
+    return;
   }
   
 
@@ -138,21 +151,30 @@ void loop() {
 
     final_data |= keys_data;
     send_data(final_data);
+    final_data = 0;
+
+    return;
   }
   if(down_state == RELEASED && down_prev_state == PRESSED){
     keys_data |= DOWN_BYTE;
-    keys_data |= unpress_button_bit;
+    final_data |= unpress_button_bit;
     down_prev_state = down_state;
 
     final_data |= keys_data;
     send_data(final_data);
+
+    return;
   }
 
-  delay(1);
+  delay(10);
 }
 
-void send_data(long long data){
-  sSerial.write(HEADER_BYTE);
-  sSerial.write((char*)&data, 8);
+void send_data(uint32_t data){
+  Serial.print("Sending: ");
+  Serial.write((char*)&data, 4);
+  Serial.print(data, HEX);
+  Serial.println("");
+   sSerial.write(HEADER_BYTE);
+  sSerial.write((char*)&data, 4);
 }
 
