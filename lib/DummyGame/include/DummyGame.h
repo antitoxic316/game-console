@@ -35,23 +35,23 @@ static const uint8_t ralsei_bitmap[] PROGMEM  = {
 class Dummygame
 {
 private:
-    Saturn game_env;
+    Saturn gameEnv_;
 public:
-    Dummygame(int scr_w, int scr_h) 
-      : game_env(scr_w, scr_h)
+    Dummygame(GraphEnv &graph_env) 
+      : gameEnv_(graph_env)
     {
-      this->generateScreenBorders(scr_w, scr_h, false, false);
+      this->generateScreenBorders(gameEnv_.getGraphicalEnv().getScreenW(), gameEnv_.getGraphicalEnv().getScreenH(), false, false);
 
-      this->game_env.addEvent("game over", [this](void *data){ this->game_env.clear(); });
+      this->gameEnv_.addEvent("game over", [this](void *data){ this->gameEnv_.interrupt(); });
 
       std::shared_ptr<dummyObj> ralsei_obj = std::make_shared<dummyObj>("ralsei");
       ralsei_obj->setBitmap(ralsei_bitmap, 24, 24);
-      this->game_env.add_dynamicObj(ralsei_obj);
+      this->gameEnv_.add_dynamicObj(ralsei_obj);
 
       std::shared_ptr<dummyPlayerObj> player_obj = std::make_shared<dummyPlayerObj>("player", DEFAULT_KEY_MAPPING);
       player_obj->setBitmap(ralsei_bitmap, 24, 24);
       player_obj->move(94, 0);
-      this->game_env.add_controlableObj(player_obj);
+      this->gameEnv_.add_controlableObj(player_obj);
     };
     ~Dummygame();
 

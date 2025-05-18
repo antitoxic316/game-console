@@ -1,33 +1,31 @@
 #ifndef _DUMMYPLAYEROBJ_H_
 #define _DUMMYPLAYEROBJ_H_
 
-#include <ControlableObjBase.h>
+#include <Saturn.h>
 
-enum DefaultControlKeys {
-    UP, DOWN, LEFT, RIGHT
-};
-const std::unordered_map<uint8_t, DefaultControlKeys> DEFAULT_KEY_MAPPING = {
-    {1, DefaultControlKeys::LEFT},
-    {2, DefaultControlKeys::RIGHT},
-    {4, DefaultControlKeys::UP},
-    {8, DefaultControlKeys::DOWN}
+
+const std::unordered_map<uint16_t, PControlKeys> DEFAULT_KEY_MAPPING = {
+    {1, PControlKeys::LEFT},
+    {2, PControlKeys::RIGHT},
+    {4, PControlKeys::UP},
+    {8, PControlKeys::DOWN}
 };
 
 
-class dummyPlayerObj : public ControlableObjBase<dummyPlayerObj, DefaultControlKeys>
+class dummyPlayerObj : public ControlableObjBase<dummyPlayerObj, PControlKeys>
 {
 private:
     /* data */
 public:
     dummyPlayerObj(
         const std::string &name,
-        std::unordered_map<uint8_t, DefaultControlKeys> keyMap
+        std::unordered_map<uint16_t, PControlKeys> keyMap
     )
         : ControlableObjBase(name, keyMap){
     }
     ~dummyPlayerObj() = default;
 
-    void onKeyInput(DefaultControlKeys key);
+    void onInput(const PControlKeys key, const InputData i_data);
 };
 
 

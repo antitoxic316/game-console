@@ -1,16 +1,16 @@
 #include "dummyPlayerObj.h"
 
-void dummyPlayerObj::onKeyInput(DefaultControlKeys key){
-    if(key == DefaultControlKeys::LEFT){
+void dummyPlayerObj::onInput(const PControlKeys key, const InputData i_data){
+    if(key == PControlKeys::LEFT){
         this->move(this->getX() - 1, this->getY());
     }
-    if(key == DefaultControlKeys::RIGHT){
+    if(key == PControlKeys::RIGHT){
         this->move(this->getX() + 1, this->getY());
     }
-    if(key == DefaultControlKeys::UP){
+    if(key == PControlKeys::UP){
         this->move(this->getX(), this->getY() - 1);
     }
-    if(key == DefaultControlKeys::DOWN){
+    if(key == PControlKeys::DOWN){
         this->move(this->getX(), this->getY() + 1);
     }
 }

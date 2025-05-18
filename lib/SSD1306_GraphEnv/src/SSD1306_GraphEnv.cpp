@@ -19,7 +19,8 @@ void GraphEnv::drawBitMap(int x, int y, const uint8_t *data, int w, int h){
 }
 
 void GraphEnv::drawText(int x, int y, const char *text, int size){
-    display_.drawChar(x, y, 'a', 1, 1, size);
+    display_.drawChar(0, 0, 'g', 1, 0, 2);
+    this->display();
 }
 
 void GraphEnv::display(){

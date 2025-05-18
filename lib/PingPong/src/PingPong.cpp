@@ -19,10 +19,10 @@ void PingPong::generateScreenBorders(int screen_w, int screen_h, bool inside_scr
     right_border->move(screen_w+1, -1);
     right_border->setBitmap(nullptr, 1, screen_h);
 
-    this->game_env.add_staticObj(bottom_border);
-    this->game_env.add_staticObj(top_border);
-    this->game_env.add_staticObj(left_border);
-    this->game_env.add_staticObj(right_border);
+    this->gameEnv_.add_staticObj(bottom_border);
+    this->gameEnv_.add_staticObj(top_border);
+    this->gameEnv_.add_staticObj(left_border);
+    this->gameEnv_.add_staticObj(right_border);
 }
 
 PingPong::~PingPong()
@@ -30,5 +30,5 @@ PingPong::~PingPong()
 }
 
 void PingPong::start(){
-    this->game_env.start();
+    this->gameEnv_.start();
 }

@@ -41,7 +41,7 @@ public:
         delay(100);
 
         Serial.begin(19200);
-        delay(100);
+        delay(100); 
     };
     ~InputHandler() = default;
 

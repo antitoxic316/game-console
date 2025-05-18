@@ -50,14 +50,25 @@ class GraphEnv
 private:
     uint32_t screenAdr_ = 0x3c;
     int oledReset_ = -1; // Reset pin # (or -1 if sharing Arduino reset pin)
+    uint16_t hwScrW;
+    uint16_t hwScrH;
     Adafruit_SSD1306 display_;
 public:
     GraphEnv(uint16_t scr_w, uint16_t src_h) 
-        :display_(scr_w, src_h, &Wire, oledReset_)
+        : hwScrW(scr_w),
+        hwScrH(src_h),
+        display_(scr_w, src_h, &Wire, oledReset_)
     {
         this->init();
     }
     ~GraphEnv() = default;
+
+    uint16_t getScreenW(){
+        return hwScrW;
+    }
+    uint16_t getScreenH(){
+        return hwScrH;
+    }
 
     void init();
     void drawBitMap(int x, int y, const uint8_t *data, int w, int h);

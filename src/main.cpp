@@ -1,11 +1,17 @@
 #include <PingPong.h>
+#include <DummyGame.h>
 
 void setup() {
-  PingPong game(128, 64);
-  game.start();
-
   Serial.begin(19200);
   delay(100);
+
+  GraphEnv graphEnv(128, 64);
+
+  PingPong game(graphEnv);
+  Dummygame game2(graphEnv);
+
+  game.start();
+  game2.start();
 }
 
 void loop() {

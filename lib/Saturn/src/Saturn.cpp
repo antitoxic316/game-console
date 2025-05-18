@@ -3,30 +3,32 @@
 #include <cmath>
 
 void Saturn::update_frame(void){
-    this->graph_env.clearDisplay();
+    this->graphEnv_.clearDisplay();
 
+    //user input handling
     this->processInput();
 
+    //drawing objects
     for(auto &obj: this->dynamic_objects) {
         obj->onFramePassed();
         if(!obj->getBitmap()){
             goto skip_drawing_object;
         }
-        this->graph_env.drawBitMap(
+        this->graphEnv_.drawBitMap(
             obj->getX(), obj->getY(),
             obj->getBitmap(),
             obj->getWidth(), obj->getHeight()
         );
 skip_drawing_object:
 
+        //object custom events handling(for example game over event in ping pong)
         this->handleEvents(obj.get());
 
+        //object collisions resolvment
         auto obj_colls = this->getObjectCollisions(obj.get());
-
         if(!obj_colls){
             continue;
         }
-
         for(auto obj_collision: *obj_colls){
             if(obj_collision.obj->isMovable() && obj->isMovable()){
                 double dispositionX = (double)obj_collision.penetrationDepth.x / 2.0;
@@ -50,7 +52,8 @@ skip_drawing_object:
         }
     }
 
-    this->graph_env.display();
+    // drawing buffer to display
+    this->graphEnv_.display();
 }
 
 void Saturn::processInput(){
@@ -162,6 +165,11 @@ void Saturn::start(){
     ulong start_time = millis();
 
     while(true){
+        if(interrupted_){
+            interrupted_ = false;
+            return;
+        }
+
         this->inputHandler_.readInput();
 
         ulong current_time = millis();
@@ -174,7 +182,6 @@ void Saturn::start(){
 }
 
 //TODO make more advanced engine restart function
-void Saturn::clear(){
-    this->static_objects.clear();
-    this->dynamic_objects.clear();
+void Saturn::interrupt(){
+    interrupted_ = true;
 }

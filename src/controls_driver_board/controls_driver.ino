@@ -46,8 +46,8 @@ void loop() {
   up_state = 1;
   down_state = 1;
 
-  int xPos = analogRead(A1);
-  int yPos = analogRead(A0);
+  int xPos = analogRead(A0);
+  int yPos = analogRead(A2);
   // Read the button state (LOW when pressed due to pull-up resistor)
   int buttonState = digitalRead(7);
 
@@ -56,7 +56,7 @@ void loop() {
   int y_v = yPos - yPosPrev;
   yPosPrev = yPos;
 
-/*
+
   x_v &= 0xFF;
   x_v <<= 16;
   y_v &= 0xFF;
@@ -65,7 +65,7 @@ void loop() {
   final_data |= x_v;
 
   final_data |= y_v;
-*/
+
   uint16_t keys_data = 0;
 
   if(xPos > 600){
@@ -88,8 +88,6 @@ void loop() {
 
     final_data |= keys_data;
     send_data(final_data);
-    final_data = 0;
-
     return;
   }
   if(left_state == RELEASED && left_prev_state == PRESSED){
@@ -99,7 +97,6 @@ void loop() {
 
     final_data |= keys_data;
     send_data(final_data);
-
     return;
   }
 
@@ -109,10 +106,9 @@ void loop() {
 
     final_data |= keys_data;
     send_data(final_data);
-    final_data = 0;
-
     return;
   }
+
   if(right_state == RELEASED && right_prev_state == PRESSED){
     keys_data |= RIGHT_BYTE;
     final_data |= unpress_button_bit;
@@ -120,8 +116,6 @@ void loop() {
 
     final_data |= keys_data;
     send_data(final_data);
-    final_data = 0;
-
     return;
   }
 
@@ -151,8 +145,6 @@ void loop() {
 
     final_data |= keys_data;
     send_data(final_data);
-    final_data = 0;
-
     return;
   }
   if(down_state == RELEASED && down_prev_state == PRESSED){
@@ -162,7 +154,6 @@ void loop() {
 
     final_data |= keys_data;
     send_data(final_data);
-
     return;
   }
 
@@ -170,11 +161,7 @@ void loop() {
 }
 
 void send_data(uint32_t data){
-  Serial.print("Sending: ");
-  Serial.write((char*)&data, 4);
-  Serial.print(data, HEX);
-  Serial.println("");
-   sSerial.write(HEADER_BYTE);
+  sSerial.write(HEADER_BYTE);
   sSerial.write((char*)&data, 4);
 }
 

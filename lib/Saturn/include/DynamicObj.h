@@ -20,7 +20,7 @@ struct Collision{
 };
 
 struct ObjEvent {
-    const std::string &ev_name;
+    const std::string ev_name;
     void *data;
 };
 

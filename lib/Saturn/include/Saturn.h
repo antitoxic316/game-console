@@ -28,13 +28,15 @@ private:
 
     std::unordered_map<std::string, std::function<void(void*)>> eventHandlers_;
 
-    GraphEnv graph_env;
+    GraphEnv &graphEnv_;
     InputHandler inputHandler_;
+
+    bool interrupted_ = false;
 
     int frame_rate = 25;
 public:
-    Saturn(uint16_t scr_w, uint16_t src_h)
-        : graph_env(scr_w, src_h)
+    Saturn(GraphEnv &graph_env)
+        : graphEnv_(graph_env)
     {
     };
     ~Saturn(){};
@@ -48,7 +50,9 @@ public:
 
     void processInput();
     
-    void setGraphicalEnv(Adafruit_SSD1306 *graph_env);
+    GraphEnv &getGraphicalEnv(){
+        return graphEnv_;
+    };
 
     std::unique_ptr<std::vector<Collision>> getObjectCollisions(DynamicObj *obj);
     bool areObjectsCollided(Obj *objA, Obj *objB);
@@ -57,7 +61,7 @@ public:
     void update_frame(void);
 
     void start();
-    void clear();
+    void interrupt();
 
     void addEvent(std::string event_name, std::function<void(void*)> handler){
         eventHandlers_[event_name] = handler;
@@ -65,12 +69,19 @@ public:
     void handleEvents(DynamicObj* obj){
         std::queue<ObjEvent> emmitedEvents = obj->getEvents();
         
+        Serial.println("suka");
+
         for(; !emmitedEvents.empty(); emmitedEvents.pop()){
+            Serial.println("blyad");
             std::string ev_name = emmitedEvents.front().ev_name;
+            Serial.println(ev_name.c_str());
             auto handler_entry = eventHandlers_.find(ev_name);
+            Serial.println(handler_entry->first.c_str());
             if(handler_entry == eventHandlers_.end()){
                 return;
             }
+
+            Serial.println(handler_entry->first.c_str());
 
             std::function<void(void*)> event_f = handler_entry->second;
             event_f(emmitedEvents.front().data);

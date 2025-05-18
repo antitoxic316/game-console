@@ -41,10 +41,10 @@ void InputHandler::readInput(){
     InputData in;
     in.key_byte = key_input;
     in.unpressed_key = currentMessage_.message & unpress_button_bit;
-    in.j1_info.acc_x = (int8_t)(currentMessage_.message & joystick_1_x_v_mask);
-    in.j1_info.acc_y = (int8_t)(currentMessage_.message & joystick_1_y_v_mask);
-    in.j2_info.acc_x = (int8_t)(currentMessage_.message & joystick_2_x_v_mask);
-    in.j2_info.acc_y = (int8_t)(currentMessage_.message & joystick_2_y_v_mask);
+    in.j1_info.acc_x = (int8_t)((currentMessage_.message & joystick_1_x_v_mask) >> 16);
+    in.j1_info.acc_y = (int8_t)((currentMessage_.message & joystick_1_y_v_mask) >> 24);
+    in.j2_info.acc_x = (int8_t)((currentMessage_.message & joystick_2_x_v_mask) >> 32);
+    in.j2_info.acc_y = (int8_t)((currentMessage_.message & joystick_2_y_v_mask) >> 40);
     
     currentMessage_ = {};
     

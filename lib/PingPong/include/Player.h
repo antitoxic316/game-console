@@ -2,10 +2,6 @@
 
 #include <Saturn.h>
 
-enum PControlKeys {
-    UP, DOWN
-};
-
 class Player : public ControlableObjBase<Player, PControlKeys>
 {
 private:
@@ -18,5 +14,5 @@ public:
     }
     ~Player() = default;
 
-    void onInput(PControlKeys key, InputData input_data);
+    void onInput(const PControlKeys key, const InputData input_data);
 };

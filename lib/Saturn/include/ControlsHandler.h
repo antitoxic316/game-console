@@ -7,6 +7,10 @@
 
 #include <InputHandler.h>
 
+enum PControlKeys {
+    LEFT, RIGHT, UP, DOWN
+};
+
 template<typename KeysEnum>
 class ControlsHandler
 {

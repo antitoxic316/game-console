@@ -20,13 +20,19 @@ void Ball::onCollision(const Collision coll_info){
         y_speed *= -1;
     }
     if(objB_name == "leftBorder"){
-        const std::string &event_name = "game over";
+        const std::string event_name = "game over";
+        Serial.println("inside ball");
+        Serial.println(event_name.c_str());
         std::string data = "player1";
-        this->emitEvent(event_name, (void*)data.c_str());
+        char *c_data = strdup(data.c_str());
+        this->emitEvent(event_name, (void*)(c_data));
     }
     if(objB_name == "rightBorder"){
-        const std::string &event_name = "game over";
+        const std::string event_name = "game over";
+        Serial.println("inside ball");
+        Serial.println(event_name.c_str());
         std::string data = "player2";
-        this->emitEvent(event_name, (void*)data.c_str());
+        char *c_data = strdup(data.c_str());
+        this->emitEvent(event_name, (void*)(c_data));
     }
 }
