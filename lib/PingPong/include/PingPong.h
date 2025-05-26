@@ -55,14 +55,11 @@ public:
     void generateScreenBorders(int screen_w, int screen_h, bool inside, bool visible);
 
     void onGameOver(void *player_name){
-        Serial.println((char*)player_name);
-        //text here
-        while(true){
-            gameEnv_.getGraphicalEnv().drawText(0,0,"8", 10);
-            gameEnv_.getGraphicalEnv().display();
-            delay(10);
-        }
+        gameEnv_.getGraphicalEnv().drawText(0,0,"8", 10);
+        gameEnv_.getGraphicalEnv().display();
         delay(500);
-        this->gameEnv_.start();
+        gameEnv_.getGraphicalEnv().clearDisplay();
+        gameEnv_.interrupt();
+        //this->gameEnv_.start();
     }
 };

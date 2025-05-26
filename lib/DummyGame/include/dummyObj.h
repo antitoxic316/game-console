@@ -42,7 +42,9 @@ public:
         }
         if(objB_name == "rightBorder"){
             x_speed *= -1;
-            emitEvent("game over", NULL);
+            std::string data = "player2";
+            char *c_data = strdup(data.c_str());
+            emitEvent("game over", (void *)c_data);
         }
     }
 };

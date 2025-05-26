@@ -7,11 +7,13 @@ void setup() {
 
   GraphEnv graphEnv(128, 64);
 
-  PingPong game(graphEnv);
-  Dummygame game2(graphEnv);
+  while(true){
+    PingPong game(graphEnv);
+    Dummygame game2(graphEnv);
 
-  game.start();
-  game2.start();
+    game.start();
+    game2.start();
+  }
 }
 
 void loop() {

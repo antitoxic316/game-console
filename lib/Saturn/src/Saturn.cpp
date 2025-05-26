@@ -173,9 +173,11 @@ void Saturn::start(){
         this->inputHandler_.readInput();
 
         ulong current_time = millis();
-        if((current_time - start_time) > 1000/this->frame_rate){
+        if((current_time - start_time) > 1000ul/this->frame_rate){
             start_time = current_time;
             this->update_frame();    
+        
+            Serial.println("frame");
         }
         delay(1);
     }
