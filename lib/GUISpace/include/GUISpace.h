@@ -1,7 +1,10 @@
-#ifndef _DummyGame_H_
-#define _DummyGame_H_
+#ifndef _GUISpace_H_
+#define _GUISpace_H_
 
 #include <Saturn.h>
+
+#include "ButtonWidget.h"
+#include "ObjGrid.h"
 
 class GUISpace
 {
@@ -13,6 +16,8 @@ public:
     {
     };
     ~GUISpace() = default;
+
+    void start();
 };
 
 #endif

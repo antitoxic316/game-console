@@ -1,5 +1,6 @@
 #include <PingPong.h>
 #include <DummyGame.h>
+#include <MainMenuProgram.h>
 
 void setup() {
   Serial.begin(19200);

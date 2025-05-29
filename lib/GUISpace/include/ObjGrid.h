@@ -4,7 +4,7 @@
 #include <Saturn.h>
 
 #include "Widget.h"
-#include "InteracableWidget.h"
+#include "InteractableWidget.h"
 
 class ObjGrid : public ControlableObjBase<ObjGrid, PControlKeys>
 {
@@ -61,7 +61,7 @@ public:
         ) {
             i += i_v;
             j += j_v;
-            if (widgetGrid_[i][j] != NULL && widgetGrid_[i][j]->isInteractable()){
+            if (widgetGrid_[i][j] != NULL){
                 newWidget = widgetGrid_[i][j];
             }
         }

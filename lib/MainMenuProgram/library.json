@@ -1,0 +1,10 @@
+{
+    "name": "MainMenuProgram",
+    "version": "0.1.0",
+    "dependencies": [
+        {
+        "name": "GUISpace",
+        "version": "0.1.0"
+        }
+    ]
+}

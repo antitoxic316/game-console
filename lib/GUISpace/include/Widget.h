@@ -3,8 +3,6 @@
 
 #include <Saturn.h>
 
-#include "DrwText.h"
-
 class Widget : public DynamicObj
 {
 private:
@@ -31,7 +29,7 @@ public:
     };
 
     void drawCallback(GraphEnv &graphEnv) override {
-        
+
     }
 };
 
