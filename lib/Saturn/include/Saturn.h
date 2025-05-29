@@ -69,10 +69,7 @@ public:
     void handleEvents(DynamicObj* obj){
         std::queue<ObjEvent> emmitedEvents = obj->getEvents();
         
-        Serial.println("suka");
-
         for(; !emmitedEvents.empty(); emmitedEvents.pop()){
-            Serial.println("blyad");
             std::string ev_name = emmitedEvents.front().ev_name;
             Serial.println(ev_name.c_str());
             auto handler_entry = eventHandlers_.find(ev_name);

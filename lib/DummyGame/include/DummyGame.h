@@ -37,7 +37,7 @@ class Dummygame
 private:
     Saturn gameEnv_;
 public:
-    Dummygame(GraphEnv &graph_env) 
+    Dummygame(GraphEnv &graph_env)
       : gameEnv_(graph_env)
     {
       this->generateScreenBorders(gameEnv_.getGraphicalEnv().getScreenW(), gameEnv_.getGraphicalEnv().getScreenH(), false, false);

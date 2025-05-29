@@ -28,6 +28,22 @@ struct SerialMessageState {
     bool gotHeader;
 };
 
+
+enum PControlKeys {
+    LEFT, RIGHT, UP, DOWN, X, Y, B, A
+};
+
+const std::unordered_map<uint16_t, PControlKeys> DEFAULT_KEY_MAPPING = {
+    {1, PControlKeys::LEFT},
+    {2, PControlKeys::RIGHT},
+    {4, PControlKeys::UP},
+    {8, PControlKeys::DOWN},
+    {16, PControlKeys::X},
+    {32, PControlKeys::Y},
+    {64, PControlKeys::B},
+    {128, PControlKeys::A}
+};
+
 class InputHandler : I_InputHandler
 {
 private:

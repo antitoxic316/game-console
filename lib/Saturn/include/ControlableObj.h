@@ -20,8 +20,8 @@ public:
         const std::string &name,
         std::unordered_map<uint16_t, KeysEnum> keyMap
     ) 
-        : controlsHandler_(keyMap),
-          DynamicObj(name)
+        : DynamicObj(name), 
+        controlsHandler_(keyMap)
     {
         setFramePassedCallback([this](){
             this->onFramePassed();

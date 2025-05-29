@@ -11,15 +11,7 @@ void Saturn::update_frame(void){
     //drawing objects
     for(auto &obj: this->dynamic_objects) {
         obj->onFramePassed();
-        if(!obj->getBitmap()){
-            goto skip_drawing_object;
-        }
-        this->graphEnv_.drawBitMap(
-            obj->getX(), obj->getY(),
-            obj->getBitmap(),
-            obj->getWidth(), obj->getHeight()
-        );
-skip_drawing_object:
+        obj->drawCallback(this->graphEnv_);
 
         //object custom events handling(for example game over event in ping pong)
         this->handleEvents(obj.get());

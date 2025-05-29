@@ -5,15 +5,17 @@
 #include <string>
 #include <cstdint>
 
+#include <SSD1306_GraphEnv.h>
+
 class Obj
 {
 private:
     std::string name;
-    int x = 0, y = 0;
-    int w = 0, h = 0;
+    int x_ = 0, y_ = 0;
+    int w_ = 0, h_ = 0;
     bool isSolid = true;
-    bool movable = true;
-    const uint8_t *bit_map;
+    bool movable_ = true;
+    const uint8_t *bitMap_;
 public:
     Obj (const std::string &name) : name(name) {
 
@@ -25,31 +27,33 @@ public:
 
     void setBitmap(const uint8_t *bitmap, int w, int h);
     const uint8_t *getBitmap(){
-        return this->bit_map;
+        return bitMap_;
     }
 
     int getX(){
-        return this->x;
+        return x_;
     }
 
 
     int getY(){
-        return this->y;
+        return y_;
     }
 
     int getWidth(){
-        return this->w;
+        return w_;
     }
 
     int getHeight(){
-        return this->h;
+        return h_;
     }
 
     bool isMovable(){
-        return movable;
+        return movable_;
     }
 
     void move(int x, int y);
+
+    virtual void drawCallback(GraphEnv &graphEnv);
 };
 
 #endif

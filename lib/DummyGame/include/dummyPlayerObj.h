@@ -3,15 +3,6 @@
 
 #include <Saturn.h>
 
-
-const std::unordered_map<uint16_t, PControlKeys> DEFAULT_KEY_MAPPING = {
-    {1, PControlKeys::LEFT},
-    {2, PControlKeys::RIGHT},
-    {4, PControlKeys::UP},
-    {8, PControlKeys::DOWN}
-};
-
-
 class dummyPlayerObj : public ControlableObjBase<dummyPlayerObj, PControlKeys>
 {
 private:
