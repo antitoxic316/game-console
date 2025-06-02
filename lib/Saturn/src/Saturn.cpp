@@ -3,21 +3,21 @@
 #include <cmath>
 
 void Saturn::update_frame(void){
-    this->graphEnv_.clearDisplay();
+    graphEnv_.clearDisplay();
 
     //user input handling
-    this->processInput();
+    processInput();
 
     //drawing objects
-    for(auto &obj: this->dynamic_objects) {
+    for(auto &obj: dynamicObjects_) {
         obj->onFramePassed();
-        obj->drawCallback(this->graphEnv_);
+        obj->drawCallback(graphEnv_);
 
         //object custom events handling(for example game over event in ping pong)
-        this->handleEvents(obj.get());
+        handleEvents(obj.get());
 
         //object collisions resolvment
-        auto obj_colls = this->getObjectCollisions(obj.get());
+        auto obj_colls = getObjectCollisions(obj.get());
         if(!obj_colls){
             continue;
         }
@@ -45,15 +45,15 @@ void Saturn::update_frame(void){
     }
 
     // drawing buffer to display
-    this->graphEnv_.display();
+    graphEnv_.display();
 }
 
 void Saturn::processInput(){
-    InputData input = this->inputHandler_.getInput();
+    InputData input = inputHandler_.getInput();
     if(!input.key_byte){
         return;
     }
-    for(auto &obj: this->controlable_objects){
+    for(auto &obj: controlableObjects_){
         obj->onAbstractInput(input);
     }
 }
@@ -61,19 +61,19 @@ void Saturn::processInput(){
 std::unique_ptr<std::vector<Collision>> Saturn::getObjectCollisions(DynamicObj *obj){
     auto collided_objs = std::make_unique<std::vector<Collision>>();
     
-    for(auto &dynamic_obj_p: this->dynamic_objects){
+    for(auto &dynamic_obj_p: dynamicObjects_){
         if(dynamic_obj_p.get()->getName() == obj->getName()){
             continue;
         }
-        if(this->areObjectsCollided(obj, dynamic_obj_p.get())){
-            Collision coll_info = this->getCollisionInfo(obj, dynamic_obj_p.get());
+        if(areObjectsCollided(obj, dynamic_obj_p.get())){
+            Collision coll_info = getCollisionInfo(obj, dynamic_obj_p.get());
             collided_objs->push_back(coll_info);
         }
     }
 
-    for(auto &static_obj_p: this->static_objects){
-        if(this->areObjectsCollided(obj, static_obj_p.get())){
-            Collision coll_info = this->getCollisionInfo(obj, static_obj_p.get());
+    for(auto &static_obj_p: staticObjects_){
+        if(areObjectsCollided(obj, static_obj_p.get())){
+            Collision coll_info = getCollisionInfo(obj, static_obj_p.get());
             collided_objs->push_back(coll_info);
         }
     }
@@ -162,20 +162,42 @@ void Saturn::start(){
             return;
         }
 
-        this->inputHandler_.readInput();
+        inputHandler_.readInput();
 
         ulong current_time = millis();
-        if((current_time - start_time) > 1000ul/this->frame_rate){
+        if((current_time - start_time) > 1000ul/frame_rate){
             start_time = current_time;
-            this->update_frame();    
-        
-            Serial.println("frame");
+            update_frame();    
         }
         delay(1);
     }
 }
 
-//TODO make more advanced engine restart function
 void Saturn::interrupt(){
     interrupted_ = true;
+}
+
+void Saturn::clearObjects(){
+   staticObjects_.clear();
+   dynamicObjects_.clear();
+   controlableObjects_.clear(); 
+}
+
+void Saturn::handleEvents(DynamicObj* obj){
+    std::queue<ObjEvent> emmitedEvents = obj->getEvents();
+    
+    for(; !emmitedEvents.empty(); emmitedEvents.pop()){
+        std::string ev_name = emmitedEvents.front().ev_name;
+        Serial.println(ev_name.c_str());
+        auto handler_entry = eventHandlers_.find(ev_name);
+        Serial.println(handler_entry->first.c_str());
+        if(handler_entry == eventHandlers_.end()){
+            return;
+        }
+
+        Serial.println(handler_entry->first.c_str());
+
+        std::function<void(void*)> event_f = handler_entry->second;
+        event_f(emmitedEvents.front().data);
+    }
 }

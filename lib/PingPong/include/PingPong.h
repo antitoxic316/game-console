@@ -27,31 +27,14 @@ class PingPong
 private:
     Saturn gameEnv_;
 public:
-    PingPong(GraphEnv &graph_env) 
-        :gameEnv_(graph_env)
+    PingPong(GraphEnv &graph_env, SoftwareSerial &controllerInput)
+        :gameEnv_(graph_env, controllerInput)
     {
-        this->gameEnv_.addEvent("game over", [this](void *data){ onGameOver(data); });
-
-        this->generateScreenBorders(gameEnv_.getGraphicalEnv().getScreenW(), gameEnv_.getGraphicalEnv().getScreenH(), false, false);
-
-        std::shared_ptr<Ball> ball_obj = std::make_shared<Ball>("ball");
-        ball_obj->setBitmap(ball_bitmap, 12, 12);
-        ball_obj->move(64, 32);
-        this->gameEnv_.add_dynamicObj(ball_obj);
-
-        std::shared_ptr<Player> p1_obj = std::make_shared<Player>("player1", P1_KEY_MAPPING);
-        p1_obj->setBitmap(player_bitmap, 4, 32);
-        p1_obj->move(10, 20);
-        this->gameEnv_.add_controlableObj(p1_obj);
-
-        std::shared_ptr<Player> p2_obj = std::make_shared<Player>("player2", P2_KEY_MAPPING);
-        p2_obj->setBitmap(player_bitmap, 4, 32);
-        p2_obj->move(110, 20);
-        this->gameEnv_.add_controlableObj(p2_obj);
+        gameInit();
     }
     ~PingPong();
 
-    void start();
+    void restart();
     void generateScreenBorders(int screen_w, int screen_h, bool inside, bool visible);
 
     void onGameOver(void *player_name){
@@ -59,7 +42,14 @@ public:
         gameEnv_.getGraphicalEnv().display();
         delay(500);
         gameEnv_.getGraphicalEnv().clearDisplay();
-        gameEnv_.interrupt();
+        restart();
         //this->gameEnv_.start();
     }
+
+    void gameInit(){
+        this->gameEnv_.addEvent("game over", [this](void *data){ onGameOver(data); });
+    }
+
+    void populateObjects();
+    void start();
 };

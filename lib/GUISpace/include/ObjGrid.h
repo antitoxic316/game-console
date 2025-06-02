@@ -22,54 +22,12 @@ public:
     }
     ~ObjGrid() = default;
 
-    void onInput(const PControlKeys key, const InputData input_data){
-        int i_v = 0, j_v = 0;
-        std::shared_ptr<I_InteractableWidget> newWidget = NULL;
-        switch(key){
-            case LEFT:
-                j_v = -1;
-                break;
-            case RIGHT:
-                j_v = 1;
-                break;
-            case UP:
-                i_v = -1;
-                break;
-            case DOWN:
-                i_v = 1;
-                break;
-            case X:
-                selectedWidget_->onXPressed();
-                return;
-            case Y:
-                selectedWidget_->onYPressed();
-                return;
-            case B:
-                selectedWidget_->onBPressed();
-                return;
-            case A:
-                selectedWidget_->onAPressed();
-                return;
-        };
-
-        int j = 5;
-        int i = 5;
-        while(
-            j >= 0 && j < widgGridW_ &&
-            i >= 0 && i < widgGridH_ &&
-            newWidget == NULL
-        ) {
-            i += i_v;
-            j += j_v;
-            if (widgetGrid_[i][j] != NULL){
-                newWidget = widgetGrid_[i][j];
-            }
-        }
-
-        newWidget->onWidgetSelected();
-        selectedWidget_->onWidgetUnSelected();
-        selectedWidget_ = newWidget;
+    //puts widget onto a widgetGrid_, for locating widget with user interaction
+    void placeWidget(std::shared_ptr<I_InteractableWidget> widg, int i, int j){
+        widgetGrid_[i][j] = widg;
     }
+
+    void onInput(const PControlKeys key, const InputData input_data);
 };
 
 #endif

@@ -6,7 +6,6 @@
 class StaticObj : public Obj
 {
 private:
-    /* data */
 public:
     StaticObj(const std::string &name)
     : Obj(name){

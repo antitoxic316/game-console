@@ -6,6 +6,7 @@
 class ButtonWidget : public InteractableWidget
 {
 private:
+    std::string label_;
 public:
     ButtonWidget(const std::string &name)
     : InteractableWidget(name){
@@ -35,6 +36,14 @@ public:
 
     void onAPressed() override {
         Serial.println("a pressed");
+    }
+
+    void drawCallback(GraphEnv &graph_env) override {
+        graph_env.drawText(0, 0, label_.c_str(), 4);
+    }
+
+    void setLabel(std::string str){
+        label_ = str;
     }
 };
 

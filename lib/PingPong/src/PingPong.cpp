@@ -30,5 +30,31 @@ PingPong::~PingPong()
 }
 
 void PingPong::start(){
-    this->gameEnv_.start();
+    populateObjects();
+    gameEnv_.start();
+}
+
+void PingPong::restart(){
+    gameEnv_.interrupt();
+    gameEnv_.clearObjects();
+    start();
+}
+
+void PingPong::populateObjects(){
+    this->generateScreenBorders(gameEnv_.getGraphicalEnv().getScreenW(), gameEnv_.getGraphicalEnv().getScreenH(), false, false);
+
+    std::shared_ptr<Ball> ball_obj = std::make_shared<Ball>("ball");
+    ball_obj->setBitmap(ball_bitmap, 12, 12);
+    ball_obj->move(64, 32);
+    this->gameEnv_.add_dynamicObj(ball_obj);
+
+    std::shared_ptr<Player> p1_obj = std::make_shared<Player>("player1", P1_KEY_MAPPING);
+    p1_obj->setBitmap(player_bitmap, 4, 32);
+    p1_obj->move(10, 20);
+    this->gameEnv_.add_controlableObj(p1_obj);
+
+    std::shared_ptr<Player> p2_obj = std::make_shared<Player>("player2", P2_KEY_MAPPING);
+    p2_obj->setBitmap(player_bitmap, 4, 32);
+    p2_obj->move(110, 20);
+    this->gameEnv_.add_controlableObj(p2_obj);
 }

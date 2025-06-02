@@ -13,8 +13,8 @@ private:
     std::string name;
     int x_ = 0, y_ = 0;
     int w_ = 0, h_ = 0;
-    bool isSolid = true;
-    bool movable_ = true;
+    bool isSolid_ = true;
+    bool isMovable_ = true;
     const uint8_t *bitMap_;
 public:
     Obj (const std::string &name) : name(name) {
@@ -48,7 +48,7 @@ public:
     }
 
     bool isMovable(){
-        return movable_;
+        return isMovable_;
     }
 
     void move(int x, int y);

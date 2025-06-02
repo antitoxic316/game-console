@@ -28,30 +28,30 @@ class DynamicObj : public Obj
 {
 private:
     std::queue<ObjEvent> eventQueue_;
-    std::function<void(const Collision)> collisionCallback;
-    std::function<void()> framePassedCallback;
+    std::function<void(const Collision)> collisionCallback_;
+    std::function<void()> framePassedCallback_;
 public:
     DynamicObj(const std::string &name)
         : Obj(name),
-        collisionCallback([](const Collision coll_info) {}),
-        framePassedCallback([]() {}){
+        collisionCallback_([](const Collision coll_info) {}),
+        framePassedCallback_([]() {}){
     };
     virtual ~DynamicObj() = default;
 
     void onFramePassed(){
-        this->framePassedCallback();
+        this->framePassedCallback_();
     }
 
     void onCollision(const Collision coll_info){
-        this->collisionCallback(coll_info);
+        this->collisionCallback_(coll_info);
     }
 
-    void setCollisionCallback(std::function<void(const Collision coll_info)> collisionCallback){
-        this->collisionCallback = collisionCallback;
+    void setCollisionCallback(std::function<void(const Collision coll_info)> collisionCallback_){
+        this->collisionCallback_ = collisionCallback_;
     }
 
-    void setFramePassedCallback(std::function<void()> framePassedCallback){
-        this->framePassedCallback = framePassedCallback;
+    void setFramePassedCallback(std::function<void()> framePassedCallback_){
+        this->framePassedCallback_ = framePassedCallback_;
     }
 
     //TODO make this more c++ish??

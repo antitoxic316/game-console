@@ -30,5 +30,6 @@ Dummygame::~Dummygame()
 }
 
 void Dummygame::start(){
+    populateObjects();
     this->gameEnv_.start();
 }

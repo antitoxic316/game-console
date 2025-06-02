@@ -12,11 +12,11 @@ void InputHandler::readInput(){
 
     uint8_t HEADER_BYTE = 0xF2;
 
-    if(!sSerial.available()){
+    if(!sSerial_.available()){
         return;
     }
 
-    int b = sSerial.read();
+    int b = sSerial_.read();
     if(b == HEADER_BYTE && !currentMessage_.gotHeader){
         currentMessage_ = {};
         currentMessage_.gotHeader = true;
@@ -48,14 +48,14 @@ void InputHandler::readInput(){
     
     currentMessage_ = {};
     
-    this->inputQueue.push(in);
+    this->inputQueue_.push(in);
 }
 
 InputData InputHandler::getInput(){
-    InputData input = this->inputQueue.front();
+    InputData input = this->inputQueue_.front();
     if(!input.key_byte){
         return input;
     }
-    this->inputQueue.pop();
+    this->inputQueue_.pop();
     return input;
 }

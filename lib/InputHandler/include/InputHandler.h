@@ -47,13 +47,15 @@ const std::unordered_map<uint16_t, PControlKeys> DEFAULT_KEY_MAPPING = {
 class InputHandler : I_InputHandler
 {
 private:
-    std::queue<InputData> inputQueue;
-    SoftwareSerial sSerial = SoftwareSerial(0, 1);
+    std::queue<InputData> inputQueue_;
+    SoftwareSerial& sSerial_;
 
     SerialMessageState currentMessage_ = {};
 public:
-    InputHandler(){
-        sSerial.begin(9600);
+    InputHandler(SoftwareSerial &s) 
+    : sSerial_(s)
+    {
+        sSerial_.begin(9600);
         delay(100);
 
         Serial.begin(19200);

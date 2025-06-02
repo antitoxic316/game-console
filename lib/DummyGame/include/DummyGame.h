@@ -37,26 +37,32 @@ class Dummygame
 private:
     Saturn gameEnv_;
 public:
-    Dummygame(GraphEnv &graph_env)
-      : gameEnv_(graph_env)
+    Dummygame(GraphEnv &graph_env, SoftwareSerial &controllerInput)
+      : gameEnv_(graph_env, controllerInput)
     {
-      this->generateScreenBorders(gameEnv_.getGraphicalEnv().getScreenW(), gameEnv_.getGraphicalEnv().getScreenH(), false, false);
-
-      this->gameEnv_.addEvent("game over", [this](void *data){ this->gameEnv_.interrupt(); });
-
-      std::shared_ptr<dummyObj> ralsei_obj = std::make_shared<dummyObj>("ralsei");
-      ralsei_obj->setBitmap(ralsei_bitmap, 24, 24);
-      this->gameEnv_.add_dynamicObj(ralsei_obj);
-
-      std::shared_ptr<dummyPlayerObj> player_obj = std::make_shared<dummyPlayerObj>("player", DEFAULT_KEY_MAPPING);
-      player_obj->setBitmap(ralsei_bitmap, 24, 24);
-      player_obj->move(94, 0);
-      this->gameEnv_.add_controlableObj(player_obj);
+      gameEnv_.addEvent("game over", [this](void *data){ this->gameEnv_.interrupt(); });
     };
     ~Dummygame();
 
     void start();
     void generateScreenBorders(int screen_w, int screen_h, bool inside, bool visible);
+
+    void populateObjects(){
+      generateScreenBorders(gameEnv_.getGraphicalEnv().getScreenW(), gameEnv_.getGraphicalEnv().getScreenH(), false, false);
+      std::shared_ptr<dummyObj> ralsei_obj = std::make_shared<dummyObj>("ralsei");
+      ralsei_obj->setBitmap(ralsei_bitmap, 24, 24);
+      gameEnv_.add_dynamicObj(ralsei_obj);
+
+      std::shared_ptr<dummyPlayerObj> player_obj = std::make_shared<dummyPlayerObj>("player", DEFAULT_KEY_MAPPING);
+      player_obj->setBitmap(ralsei_bitmap, 24, 24);
+      player_obj->move(94, 0);
+      gameEnv_.add_controlableObj(player_obj);
+    };
+    void restart(){
+      gameEnv_.interrupt();
+      gameEnv_.clearObjects();
+      start();
+    };
 };
 
 #endif

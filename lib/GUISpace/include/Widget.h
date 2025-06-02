@@ -27,10 +27,6 @@ public:
     void setGridJ(int gridJ){
         gridJ_ = gridJ;
     };
-
-    void drawCallback(GraphEnv &graphEnv) override {
-
-    }
 };
 
 #endif
