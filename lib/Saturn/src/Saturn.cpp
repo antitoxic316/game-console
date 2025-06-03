@@ -167,7 +167,7 @@ void Saturn::start(){
         ulong current_time = millis();
         if((current_time - start_time) > 1000ul/frame_rate){
             start_time = current_time;
-            update_frame();    
+            update_frame();
         }
         delay(1);
     }
@@ -188,13 +188,12 @@ void Saturn::handleEvents(DynamicObj* obj){
     
     for(; !emmitedEvents.empty(); emmitedEvents.pop()){
         std::string ev_name = emmitedEvents.front().ev_name;
-        Serial.println(ev_name.c_str());
         auto handler_entry = eventHandlers_.find(ev_name);
-        Serial.println(handler_entry->first.c_str());
         if(handler_entry == eventHandlers_.end()){
             return;
         }
 
+        Serial.print("inside saturn handle events" );
         Serial.println(handler_entry->first.c_str());
 
         std::function<void(void*)> event_f = handler_entry->second;

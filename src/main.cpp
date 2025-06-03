@@ -14,9 +14,11 @@ void setup() {
   while(true){
     PingPong game(graphEnv, controllerSerial);
     Dummygame game2(graphEnv, controllerSerial);
+    MainMenuProgram mainmenu(graphEnv, controllerSerial);
 
     game.start();
     game2.start();
+    mainmenu.start();
   }
 }
 

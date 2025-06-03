@@ -38,12 +38,11 @@ public:
     void generateScreenBorders(int screen_w, int screen_h, bool inside, bool visible);
 
     void onGameOver(void *player_name){
-        gameEnv_.getGraphicalEnv().drawText(0,0,"8", 10);
+        gameEnv_.interrupt();
+        gameEnv_.getGraphicalEnv().drawText(0,0,"8888888", 4);
         gameEnv_.getGraphicalEnv().display();
         delay(500);
-        gameEnv_.getGraphicalEnv().clearDisplay();
-        restart();
-        //this->gameEnv_.start();
+        gameEnv_.clearObjects();
     }
 
     void gameInit(){
