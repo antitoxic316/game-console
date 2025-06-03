@@ -30,7 +30,8 @@ struct SerialMessageState {
 
 
 enum PControlKeys {
-    LEFT, RIGHT, UP, DOWN, X, Y, B, A
+    LEFT, RIGHT, UP, DOWN, X, Y, B, A,
+    P2_LEFT, P2_RIGHT, P2_UP, P2_DOWN, P2_X, P2_Y, P2_B, P2_A
 };
 
 const std::unordered_map<uint16_t, PControlKeys> DEFAULT_KEY_MAPPING = {
@@ -41,7 +42,15 @@ const std::unordered_map<uint16_t, PControlKeys> DEFAULT_KEY_MAPPING = {
     {16, PControlKeys::X},
     {32, PControlKeys::Y},
     {64, PControlKeys::B},
-    {128, PControlKeys::A}
+    {128, PControlKeys::A},
+    {256, PControlKeys::P2_LEFT},
+    {512, PControlKeys::P2_RIGHT},
+    {1024, PControlKeys::P2_UP},
+    {2048, PControlKeys::P2_DOWN},
+    {4096, PControlKeys::P2_X},
+    {8192, PControlKeys::P2_Y},
+    {16384, PControlKeys::P2_B},
+    {32768, PControlKeys::P2_A}
 };
 
 class InputHandler : I_InputHandler

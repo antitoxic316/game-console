@@ -2,15 +2,43 @@
 
 SoftwareSerial sSerial(12,11);
 
-uint8_t LEFT_BYTE = 0b00000001;
-uint8_t RIGHT_BYTE = 0b00000010;
-uint8_t UP_BYTE = 0b00000100;
-uint8_t DOWN_BYTE = 0b00001000;
-
 #define PRESSED 0
 #define RELEASED 1
 
 #define HEADER_BYTE 0xF2
+
+// virtual because joystick left is also consodered button
+typedef struct VirtualKey_ {
+  const char *name;
+  const int16_t transmitVal;
+  int prevState = 0;
+  int state = 0;
+} VirtualKey;
+
+VirtualKey p1_left = {"p1_left", 1};
+VirtualKey p1_right = {"p1_right", 2};
+VirtualKey p1_up = {"p1_up", 4};
+VirtualKey p1_down = {"p1_down", 8};
+VirtualKey p1_x = {"p1_x", 16};
+VirtualKey p1_y = {"p1_y", 32};
+VirtualKey p1_b = {"p1_b", 64};
+VirtualKey p1_a = {"p1_a", 128};
+
+VirtualKey p2_left = {"p2_left", 256};
+VirtualKey p2_right = {"p2_right", 512};
+VirtualKey p2_up = {"p2_up", 1024};
+VirtualKey p2_down = {"p2_down", 2048};
+VirtualKey p2_x = {"p2_x", 4096};
+VirtualKey p2_y = {"p2_y", 8192};
+VirtualKey p2_b = {"p2_b", 16384};
+VirtualKey p2_a = {"p2_a", 32768};
+
+#define VIRTUAL_KEYS_NUM 16
+VirtualKey virtualKeys[VIRTUAL_KEYS_NUM] = {
+  p1_left, p1_right, p1_up, p1_down, p1_x, p1_y, p1_b, p1_a,
+  p2_left, p2_right, p2_up, p2_down, p2_x, p2_y, p2_b, p2_a
+};
+
 
 int left_prev_state = 0;
 int left_state = 0;
@@ -80,81 +108,26 @@ void loop() {
   if(yPos < 400){
     down_state = PRESSED;
   }
-  
 
-  if(left_state == PRESSED && left_prev_state == RELEASED){
-    keys_data |= LEFT_BYTE;
-    left_prev_state = left_state;
+  for(int i = 0; i < VIRTUAL_KEYS_NUM; i++){
+    VirtualKey *v_key = &virtualKeys[i];
+    if(v_key->state == PRESSED && v_key->prevState == RELEASED){
+      keys_data |= v_key->transmitVal;
+      v_key->prevState = v_key->state;
 
-    final_data |= keys_data;
-    send_data(final_data);
-    return;
-  }
-  if(left_state == RELEASED && left_prev_state == PRESSED){
-    keys_data |= LEFT_BYTE;
-    final_data |= unpress_button_bit;
-    left_prev_state = left_state;
+      final_data |= keys_data;
+      send_data(final_data);
+      return;
+    }
+    if(v_key->state == RELEASED && v_key->prevState == PRESSED){
+      keys_data |= v_key->transmitVal;
+      final_data |= unpress_button_bit;
+      v_key->prevState = v_key->state;
 
-    final_data |= keys_data;
-    send_data(final_data);
-    return;
-  }
-
-  if(right_state == PRESSED && right_prev_state == RELEASED){
-    keys_data |= RIGHT_BYTE;
-    right_prev_state = right_state;
-
-    final_data |= keys_data;
-    send_data(final_data);
-    return;
-  }
-
-  if(right_state == RELEASED && right_prev_state == PRESSED){
-    keys_data |= RIGHT_BYTE;
-    final_data |= unpress_button_bit;
-    right_prev_state = right_state;
-
-    final_data |= keys_data;
-    send_data(final_data);
-    return;
-  }
-
-  if(up_state == PRESSED && up_prev_state == RELEASED){
-    keys_data |= UP_BYTE;
-    up_prev_state = up_state;
-
-    final_data |= keys_data;
-    send_data(final_data);
-    return;
-  }
-  if(up_state == RELEASED && up_prev_state == PRESSED){
-    keys_data |= UP_BYTE;
-    final_data |= unpress_button_bit;
-    up_prev_state = up_state;
-
-    final_data |= keys_data;
-    send_data(final_data);
-
-    return;
-  }
-  
-
-  if(down_state == PRESSED && down_prev_state == RELEASED){
-    keys_data |= DOWN_BYTE;
-    down_prev_state = down_state;
-
-    final_data |= keys_data;
-    send_data(final_data);
-    return;
-  }
-  if(down_state == RELEASED && down_prev_state == PRESSED){
-    keys_data |= DOWN_BYTE;
-    final_data |= unpress_button_bit;
-    down_prev_state = down_state;
-
-    final_data |= keys_data;
-    send_data(final_data);
-    return;
+      final_data |= keys_data;
+      send_data(final_data);
+      return;
+    }
   }
 
   delay(10);
