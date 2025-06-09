@@ -17,8 +17,8 @@ const std::unordered_map<uint16_t, PControlKeys> P1_KEY_MAPPING = {
 };
 
 const std::unordered_map<uint16_t, PControlKeys> P2_KEY_MAPPING = {
-    {4, PControlKeys::UP},
-    {8, PControlKeys::DOWN}
+    {1024, PControlKeys::P2_UP},
+    {2048, PControlKeys::P2_DOWN}
 };
 
 

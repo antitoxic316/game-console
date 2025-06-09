@@ -11,14 +11,13 @@ class ObjGrid : public ControlableObjBase<ObjGrid, PControlKeys>
 private:
     int widgGridW_ = 10;
     int widgGridH_ = 10;
-    std::shared_ptr<I_InteractableWidget> widgetGrid_[10][10];
+    std::shared_ptr<I_InteractableWidget> widgetGrid_[10][10] = {};
 
-    std::shared_ptr<I_InteractableWidget> selectedWidget_ = NULL;
+    std::shared_ptr<I_InteractableWidget> selectedWidget_ = nullptr;
 public:
     ObjGrid(
         std::unordered_map<uint16_t, PControlKeys> keyMap
     ) : ControlableObjBase("rootObjGrid", keyMap){
-
     }
     ~ObjGrid() = default;
 

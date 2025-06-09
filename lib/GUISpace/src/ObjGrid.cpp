@@ -1,21 +1,36 @@
 #include "ObjGrid.h"
 
+// QUICK HACK, LATER SHOULD BE FIXED
 void ObjGrid::onInput(const PControlKeys key, const InputData input_data){
     int i_v = 0, j_v = 0;
-    std::shared_ptr<I_InteractableWidget> newWidget = NULL;
+    std::shared_ptr<I_InteractableWidget> newWidget(nullptr);
+
+    Serial.println("buffer check00");
+
+    Serial.print("obj grid recieved: ");
+    Serial.println(input_data.key_byte);
+    
+    
     switch(key){
         case LEFT:
-            j_v = -1;
+            //j_v = -1;
             break;
         case RIGHT:
-            j_v = 1;
+            //j_v = 1;
             break;
         case UP:
-            i_v = -1;
+            selectedWidget_ = widgetGrid_[0][0];
             break;
         case DOWN:
-            i_v = 1;
+            selectedWidget_ = widgetGrid_[1][0];
             break;
+        default:
+            break;
+    }
+    if(!selectedWidget_){
+        return;
+    }
+    switch(key){
         case X:
             selectedWidget_->onXPressed();
             return;
@@ -29,49 +44,9 @@ void ObjGrid::onInput(const PControlKeys key, const InputData input_data){
             selectedWidget_->onAPressed();
             return;
     };
-
-    int j = 5;
-    int i = 5;
-    if(i_v){
-        while(
-            i >= 0 && i < widgGridH_ &&
-            newWidget == NULL
-        ) {
-            if (widgetGrid_[i][j] != NULL){
-                newWidget = widgetGrid_[i][j];
-                break;
-            }
-            for(int k = 0; k < widgGridW_; k++){
-                if (widgetGrid_[i][k] != NULL){
-                    newWidget = widgetGrid_[i][k];
-                    break;
-                }
-            }
-            i += i_v;
-        }
-    } else if (j_v) {
-        while(
-            j >= 0 && j < widgGridW_ &&
-            newWidget == NULL
-        ) {
-            if (widgetGrid_[i][j] != NULL){
-                newWidget = widgetGrid_[i][j];
-                break;
-            }
-            for(int k = 0; k < widgGridH_; k++){
-                if (widgetGrid_[k][j] != NULL){
-                    newWidget = widgetGrid_[k][j];
-                    break;
-                }
-            }
-            j += j_v;
-        }
-    }
-    
-
-    
-
+    /*
     newWidget->onWidgetSelected();
     selectedWidget_->onWidgetUnSelected();
     selectedWidget_ = newWidget;
+    */
 }

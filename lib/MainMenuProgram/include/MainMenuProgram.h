@@ -13,9 +13,19 @@ public:
     MainMenuProgram(GraphEnv &graph_env, SoftwareSerial &controllerInput) 
         :guiEnv_(graph_env, controllerInput)
     {
-        std::shared_ptr<ButtonWidget> test_obj = std::make_shared<ButtonWidget>("test");
-        test_obj->setLabel("test");
-        guiEnv_.addInteractableWidget(test_obj);
+        std::shared_ptr<ButtonWidget> test_game_button = std::make_shared<ButtonWidget>("test");
+        test_game_button->setLabel("test");
+        test_game_button->setGridI(0);
+        test_game_button->setGridJ(0);
+        //test_game_button->setAButtonPressedCallback();
+        guiEnv_.addInteractableWidget(test_game_button);
+        
+        std::shared_ptr<ButtonWidget> pingpong_game_button = std::make_shared<ButtonWidget>("test");
+        pingpong_game_button->setLabel("pingpong");
+        pingpong_game_button->setGridI(1);
+        pingpong_game_button->setGridJ(0);
+        //pingpong_game_button->setAButtonPressedCallback();
+        guiEnv_.addInteractableWidget(pingpong_game_button);
     }
     ~MainMenuProgram();
 

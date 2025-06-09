@@ -8,49 +8,45 @@ SoftwareSerial sSerial(12,11);
 #define HEADER_BYTE 0xF2
 
 // virtual because joystick left is also consodered button
-typedef struct VirtualKey_ {
+struct VirtualKey {
+  VirtualKey(const char *n, const int16_t serialVal)
+  : name(name), transmitVal(serialVal), prevState(RELEASED), state(RELEASED){
+  } 
   const char *name;
-  const int16_t transmitVal;
-  int prevState = 0;
-  int state = 0;
-} VirtualKey;
-
-VirtualKey p1_left = {"p1_left", 1};
-VirtualKey p1_right = {"p1_right", 2};
-VirtualKey p1_up = {"p1_up", 4};
-VirtualKey p1_down = {"p1_down", 8};
-VirtualKey p1_x = {"p1_x", 16};
-VirtualKey p1_y = {"p1_y", 32};
-VirtualKey p1_b = {"p1_b", 64};
-VirtualKey p1_a = {"p1_a", 128};
-
-VirtualKey p2_left = {"p2_left", 256};
-VirtualKey p2_right = {"p2_right", 512};
-VirtualKey p2_up = {"p2_up", 1024};
-VirtualKey p2_down = {"p2_down", 2048};
-VirtualKey p2_x = {"p2_x", 4096};
-VirtualKey p2_y = {"p2_y", 8192};
-VirtualKey p2_b = {"p2_b", 16384};
-VirtualKey p2_a = {"p2_a", 32768};
-
-#define VIRTUAL_KEYS_NUM 16
-VirtualKey virtualKeys[VIRTUAL_KEYS_NUM] = {
-  p1_left, p1_right, p1_up, p1_down, p1_x, p1_y, p1_b, p1_a,
-  p2_left, p2_right, p2_up, p2_down, p2_x, p2_y, p2_b, p2_a
+  const uint16_t transmitVal;
+  int prevState;
+  int state;
 };
 
+VirtualKey p1_left("p1_left", 1);
+VirtualKey p1_right("p1_right", 2);
+VirtualKey p1_up("p1_up", 4);
+VirtualKey p1_down("p1_down", 8);
+VirtualKey p1_x("p1_x", 16);
+VirtualKey p1_y("p1_y", 32);
+VirtualKey p1_b("p1_b", 64);
+VirtualKey p1_a("p1_a", 128);
 
-int left_prev_state = 0;
-int left_state = 0;
-int right_prev_state = 0;
-int right_state = 0;
-int up_prev_state = 0;
-int up_state = 0;
-int down_prev_state = 0;
-int down_state = 0;
+VirtualKey p2_left("p2_left", 256);
+VirtualKey p2_right("p2_right", 512);
+VirtualKey p2_up("p2_up", 1024);
+VirtualKey p2_down("p2_down", 2048);
+VirtualKey p2_x("p2_x", 4096);
+VirtualKey p2_y("p2_y", 8192);
+VirtualKey p2_b("p2_b", 16384);
+VirtualKey p2_a("p2_a", 32768);
 
-int xPosPrev = 512;
-int yPosPrev = 512;
+#define VIRTUAL_KEYS_NUM 16
+VirtualKey *virtualKeys[VIRTUAL_KEYS_NUM] = {
+  &p1_left, &p1_right, &p1_up, &p1_down, &p1_x, &p1_y, &p1_b, &p1_a,
+  &p2_left, &p2_right, &p2_up, &p2_down, &p2_x, &p2_y, &p2_b, &p2_a
+};
+
+int xPosJ1Prev = 512;
+int yPosJ1Prev = 512;
+
+int xPosJ2Prev = 512;
+int yPosJ2Prev = 512;
 
 uint32_t unpress_button_bit = 0x80000000;
 
@@ -67,53 +63,79 @@ void setup() {
 }
 
 void loop() {
+  //check for pressing continuity
+  for(int i = 0; i < VIRTUAL_KEYS_NUM; i++){
+    virtualKeys[i]->state = RELEASED;
+  }
+
   uint32_t final_data = 0;
 
-  left_state = 1;
-  right_state = 1;
-  up_state = 1;
-  down_state = 1;
+  int xPosJ1 = analogRead(A0);
+  int yPosJ1 = analogRead(A1);
+  int J1Button = digitalRead(7);
 
-  int xPos = analogRead(A0);
-  int yPos = analogRead(A2);
-  // Read the button state (LOW when pressed due to pull-up resistor)
-  int buttonState = digitalRead(7);
+  int xPosJ2 = analogRead(A3);
+  int yPosJ2 = analogRead(A4);
+  int J2Button = digitalRead(8);
 
-  int x_v = xPos - xPosPrev;
-  xPosPrev = xPos;
-  int y_v = yPos - yPosPrev;
-  yPosPrev = yPos;
+  int xv_J1 = xPosJ1 - xPosJ1Prev;
+  xPosJ1Prev = xPosJ1;
+  int yv_J1 = yPosJ1 - yPosJ1Prev;
+  yPosJ1Prev = yPosJ1;
 
+  xv_J1 &= 0xFF;
+  xv_J1 <<= 16;
+  yv_J1 &= 0xFF;
+  yv_J1 <<= 24;
 
-  x_v &= 0xFF;
-  x_v <<= 16;
-  y_v &= 0xFF;
-  y_v <<= 24;
+  final_data |= xv_J1;
 
-  final_data |= x_v;
-
-  final_data |= y_v;
+  final_data |= yv_J1;
 
   uint16_t keys_data = 0;
 
-  if(xPos > 600){
-    right_state = PRESSED;  
+  if(xPosJ1 > 600){
+    virtualKeys[0]->state = PRESSED;  
   }
-  if(xPos < 400){
-    left_state = PRESSED;
+  if(xPosJ1 < 400){
+    virtualKeys[1]->state = PRESSED;
   }
-  if(yPos > 600){
-    up_state = PRESSED;
+  if(yPosJ1 > 600){
+    virtualKeys[2]->state = PRESSED;
   }
-  if(yPos < 400){
-    down_state = PRESSED;
+  if(yPosJ1 < 400){
+    virtualKeys[3]->state = PRESSED;
+  }
+
+  if(xPosJ2 > 600){
+    virtualKeys[8]->state = PRESSED;  
+  }
+  if(xPosJ2 < 400){
+    virtualKeys[9]->state = PRESSED;
+  }
+  if(yPosJ2 > 600){
+    virtualKeys[10]->state = PRESSED;
+  }
+  if(yPosJ2 < 400){
+    virtualKeys[11]->state = PRESSED;
+  }
+
+  if(!J1Button){
+    virtualKeys[7]->state = PRESSED;
   }
 
   for(int i = 0; i < VIRTUAL_KEYS_NUM; i++){
-    VirtualKey *v_key = &virtualKeys[i];
+    VirtualKey *v_key = virtualKeys[i];
     if(v_key->state == PRESSED && v_key->prevState == RELEASED){
       keys_data |= v_key->transmitVal;
       v_key->prevState = v_key->state;
+
+      Serial.print("prevState: ");
+      Serial.println(v_key->prevState);
+
+
+      Serial.print("state: ");
+      Serial.println(v_key->state);
 
       final_data |= keys_data;
       send_data(final_data);
@@ -134,7 +156,7 @@ void loop() {
 }
 
 void send_data(uint32_t data){
+  Serial.println("sent");
   sSerial.write(HEADER_BYTE);
   sSerial.write((char*)&data, 4);
 }
-

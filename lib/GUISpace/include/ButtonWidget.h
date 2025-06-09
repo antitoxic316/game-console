@@ -14,31 +14,10 @@ public:
     }
     ~ButtonWidget() = default;
 
-    void onWidgetSelected() override {
-        Serial.println("selected");
-    }
-
-    void onWidgetUnSelected() override {
-        Serial.println("unselected");
-    }
-
-    void onXPressed() override {
-
-    }
-
-    void onYPressed() override {
-        
-    }
-
-    void onBPressed() override {
-        
-    }
-
-    void onAPressed() override {
-        Serial.println("a pressed");
-    }
-
-    void drawCallback(GraphEnv &graph_env) override {
+    virtual void drawCallback(GraphEnv &graph_env) override {
+        if(!selected_){
+            return;
+        }
         graph_env.drawText(0, 0, label_.c_str(), 4);
     }
 
