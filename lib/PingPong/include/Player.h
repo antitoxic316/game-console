@@ -14,5 +14,5 @@ public:
     }
     ~Player() = default;
 
-    void onInput(const PControlKeys key, const InputData input_data);
+    void onKeyHeld(const PControlKeys key, const InputData input_data);
 };

@@ -11,9 +11,9 @@ class ObjGrid : public ControlableObjBase<ObjGrid, PControlKeys>
 private:
     int widgGridW_ = 10;
     int widgGridH_ = 10;
-    std::shared_ptr<I_InteractableWidget> widgetGrid_[10][10] = {};
+    std::shared_ptr<InteractableWidget> widgetGrid_[10][10] = {};
 
-    std::shared_ptr<I_InteractableWidget> selectedWidget_ = nullptr;
+    std::shared_ptr<InteractableWidget> selectedWidget_ = nullptr;
 public:
     ObjGrid(
         std::unordered_map<uint16_t, PControlKeys> keyMap
@@ -22,11 +22,11 @@ public:
     ~ObjGrid() = default;
 
     //puts widget onto a widgetGrid_, for locating widget with user interaction
-    void placeWidget(std::shared_ptr<I_InteractableWidget> widg, int i, int j){
+    void placeWidget(std::shared_ptr<InteractableWidget> widg, int i, int j){
         widgetGrid_[i][j] = widg;
     }
 
-    void onInput(const PControlKeys key, const InputData input_data);
+    void onKeyPressed(const PControlKeys key, const InputData input_data) override;
 };
 
 #endif

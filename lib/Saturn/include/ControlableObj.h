@@ -10,7 +10,9 @@ template<typename KeysEnum>
 class ControlableObj : public IControlableAbstr, public DynamicObj
 {
 private:
-    std::function<void(KeysEnum, InputData)> keyInputCallback;
+    std::function<void(KeysEnum, InputData)> keyHeldCallback_;
+    std::function<void(KeysEnum, InputData)> keyPressedCallback_;
+    std::function<void(KeysEnum, InputData)> keyUnpressedCallback_;
 
     ControlsHandler<KeysEnum> controlsHandler_;
 
@@ -34,22 +36,48 @@ public:
 
     void onInput(InputData input){
         currentInputData_ = input;
-        this->controlsHandler_.processKeyByte(
+        controlsHandler_.processKeyByte(
             input.key_byte, input.unpressed_key
         );
     }
 
     void onFramePassed(){
-        std::unordered_map<KeysEnum, bool> key_states = controlsHandler_.getKeysState();
-        for(auto key_state: key_states){
+        std::unordered_map<KeysEnum, bool> key_states;
+
+        key_states = controlsHandler_.getHeldKeysState();
+        for(auto &key_state: key_states){
             if(key_state.second){
-                this->keyInputCallback(key_state.first, currentInputData_);
+                keyHeldCallback_(key_state.first, currentInputData_);
+            }
+        }
+        key_states = controlsHandler_.getPressedKeysState();
+        for(auto &key_state: key_states){
+            if(key_state.second){
+
+            Serial.println("what the sigma");
+                keyPressedCallback_(key_state.first, currentInputData_);
+                controlsHandler_.softUnpressKey(key_state.first);
+            }
+        }
+        key_states = controlsHandler_.getUnpressedKeysState();
+        for(auto &key_state: key_states){
+            if(key_state.second){
+                keyUnpressedCallback_(key_state.first, currentInputData_);
+                controlsHandler_.softPressKey(key_state.first);
             }
         }
     }
 
-    void setInputCallback(std::function<void(KeysEnum, InputData)> keyInputCallback){
-        this->keyInputCallback = keyInputCallback;
+    void setKeyHeldCallback(std::function<void(KeysEnum, InputData)> keyHeldCallback){
+        this->keyHeldCallback_ = keyHeldCallback;
+    }
+
+    void setKeyPressedCallback(std::function<void(KeysEnum, InputData)> keyPressedCallback){
+        this->keyPressedCallback_ = keyPressedCallback;
+    }
+
+    void setKeyUnpressedCallback(std::function<void(KeysEnum, InputData)> keyUnpressedCallback){
+        this->keyUnpressedCallback_ = keyUnpressedCallback;
     }
 
     virtual ~ControlableObj() = default;

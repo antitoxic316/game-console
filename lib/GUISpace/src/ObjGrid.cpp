@@ -1,9 +1,9 @@
 #include "ObjGrid.h"
 
 // QUICK HACK, LATER SHOULD BE FIXED
-void ObjGrid::onInput(const PControlKeys key, const InputData input_data){
+void ObjGrid::onKeyPressed(const PControlKeys key, const InputData input_data) {
     int i_v = 0, j_v = 0;
-    std::shared_ptr<I_InteractableWidget> newWidget(nullptr);
+    std::shared_ptr<InteractableWidget> newWidget(nullptr);
 
     Serial.println("buffer check00");
 
@@ -19,17 +19,27 @@ void ObjGrid::onInput(const PControlKeys key, const InputData input_data){
             //j_v = 1;
             break;
         case UP:
-            selectedWidget_ = widgetGrid_[0][0];
+            newWidget = widgetGrid_[0][0];
+            Serial.print("name check");
+            Serial.println(newWidget->getName().c_str());
             break;
         case DOWN:
-            selectedWidget_ = widgetGrid_[1][0];
+            Serial.print("name check");
+            Serial.println(newWidget->getName().c_str());
+            newWidget = widgetGrid_[1][0];
             break;
         default:
             break;
     }
-    if(!selectedWidget_){
+    if(!newWidget){
         return;
     }
+    newWidget->onWidgetSelected();
+    if(selectedWidget_){
+        selectedWidget_->onWidgetUnSelected();
+    }
+    selectedWidget_ = newWidget;
+
     switch(key){
         case X:
             selectedWidget_->onXPressed();
@@ -41,12 +51,8 @@ void ObjGrid::onInput(const PControlKeys key, const InputData input_data){
             selectedWidget_->onBPressed();
             return;
         case A:
+            Serial.println(selectedWidget_->getName().c_str());
             selectedWidget_->onAPressed();
             return;
     };
-    /*
-    newWidget->onWidgetSelected();
-    selectedWidget_->onWidgetUnSelected();
-    selectedWidget_ = newWidget;
-    */
-}
+};

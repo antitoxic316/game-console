@@ -25,8 +25,6 @@ void InputHandler::readInput(){
         currentMessage_.message |= ((uint64_t)b << (8 * currentMessage_.byte_i));
         currentMessage_.byte_i++;
         // continue to the byte_i check;
-        Serial.println(currentMessage_.byte_i);
-        Serial.println(currentMessage_.message);
     } else {
         return;
     }
@@ -36,7 +34,6 @@ void InputHandler::readInput(){
     }
     
     uint16_t key_input = currentMessage_.message & key_input_mask;
-    Serial.println((uint64_t)currentMessage_.message);
 
     InputData in;
     in.key_byte = key_input;

@@ -14,12 +14,33 @@ public:
     ControlableObjBase(const std::string &name, std::unordered_map<uint16_t, KeysEnum> keyMap)
         :ControlableObj<KeysEnum>(name, keyMap)
     {   
-        this->setInputCallback(
+        this->setKeyHeldCallback(
             [this](const KeysEnum key, const InputData i_data){
-                static_cast<Derived*>(this)->onInput(key, i_data);
+                static_cast<Derived*>(this)->onKeyHeld(key, i_data);
+            }
+        );
+        this->setKeyPressedCallback(
+            [this](const KeysEnum key, const InputData i_data){
+                static_cast<Derived*>(this)->onKeyPressed(key, i_data);
+            }
+        );
+        this->setKeyUnpressedCallback(
+            [this](const KeysEnum key, const InputData i_data){
+                static_cast<Derived*>(this)->onKeyUnpressed(key, i_data);
             }
         );
     }
+
+    virtual void onKeyHeld(const KeysEnum key, const InputData i_data) override{
+
+    }
+    virtual void onKeyPressed(const KeysEnum key, const InputData i_data) override{
+        Serial.println("this sucks");
+    }
+    virtual void onKeyUnpressed(const KeysEnum key, const InputData i_data) override{
+
+    }
+    
     ~ControlableObjBase() override = default;
 };
 

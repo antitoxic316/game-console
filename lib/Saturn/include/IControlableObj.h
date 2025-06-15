@@ -13,7 +13,9 @@ public:
         
     }
     virtual ~IControlableObj() = default;
-    virtual void onInput(KeysEnum key, InputData input_data) = 0;
+    virtual void onKeyHeld(KeysEnum key, InputData input_data) = 0;
+    virtual void onKeyPressed(KeysEnum key, InputData input_data) = 0;
+    virtual void onKeyUnpressed(KeysEnum key, InputData input_data) = 0;
 };
 
 #endif

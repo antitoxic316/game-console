@@ -25,11 +25,13 @@ public:
 
     void onWidgetSelected() override {
         selected_ = false;
+        Serial.print(this->getName().c_str());
         Serial.println("selected");
     }
 
     void onWidgetUnSelected() override {
         selected_ = true;
+        Serial.print(this->getName().c_str());
         Serial.println("unselected");
     }
 

@@ -1,6 +1,6 @@
 #include "dummyPlayerObj.h"
 
-void dummyPlayerObj::onInput(const PControlKeys key, const InputData i_data){
+void dummyPlayerObj::onKeyHeld(const PControlKeys key, const InputData i_data){
     if(key == PControlKeys::LEFT){
         this->move(this->getX() - 1, this->getY());
     }

@@ -16,7 +16,7 @@ public:
     }
     ~dummyPlayerObj() = default;
 
-    void onInput(const PControlKeys key, const InputData i_data);
+    void onKeyHeld(const PControlKeys key, const InputData i_data);
 };
 
 
