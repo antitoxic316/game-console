@@ -42,11 +42,14 @@ VirtualKey *virtualKeys[VIRTUAL_KEYS_NUM] = {
   &p2_left, &p2_right, &p2_up, &p2_down, &p2_x, &p2_y, &p2_b, &p2_a
 };
 
-int xPosJ1Prev = 512;
-int yPosJ1Prev = 512;
+#define J_STBY 500 // standby joystick pwn reading
+#define J_TOLERANCE 100 // tolerance for signal noise
 
-int xPosJ2Prev = 512;
-int yPosJ2Prev = 512;
+int xPosJ1Prev = J_STBY;
+int yPosJ1Prev = J_STBY;
+
+int xPosJ2Prev = J_STBY;
+int yPosJ2Prev = J_STBY;
 
 uint32_t unpress_button_bit = 0x80000000;
 
@@ -74,8 +77,8 @@ void loop() {
   int yPosJ1 = analogRead(A1);
   int J1Button = digitalRead(7);
 
-  int xPosJ2 = analogRead(A3);
-  int yPosJ2 = analogRead(A4);
+  int xPosJ2 = analogRead(A2);
+  int yPosJ2 = analogRead(A3);
   int J2Button = digitalRead(8);
 
   int xv_J1 = xPosJ1 - xPosJ1Prev;
@@ -94,29 +97,30 @@ void loop() {
 
   uint16_t keys_data = 0;
 
-  if(xPosJ1 > 600){
-    virtualKeys[0]->state = PRESSED;  
+
+  if(xPosJ1 > J_STBY+J_TOLERANCE){
+    virtualKeys[1]->state = PRESSED;  
   }
-  if(xPosJ1 < 400){
-    virtualKeys[1]->state = PRESSED;
+  if(xPosJ1 < J_STBY-J_TOLERANCE){
+    virtualKeys[0]->state = PRESSED;
   }
-  if(yPosJ1 > 600){
+  if(yPosJ1 > J_STBY+J_TOLERANCE){
     virtualKeys[2]->state = PRESSED;
   }
-  if(yPosJ1 < 400){
+  if(yPosJ1 < J_STBY-J_TOLERANCE){
     virtualKeys[3]->state = PRESSED;
   }
 
-  if(xPosJ2 > 600){
-    virtualKeys[8]->state = PRESSED;  
+  if(xPosJ2 > J_STBY+J_TOLERANCE){
+    virtualKeys[9]->state = PRESSED;  
   }
-  if(xPosJ2 < 400){
-    virtualKeys[9]->state = PRESSED;
+  if(xPosJ2 < J_STBY-J_TOLERANCE){
+    virtualKeys[8]->state = PRESSED;
   }
-  if(yPosJ2 > 600){
+  if(yPosJ2 > J_STBY+J_TOLERANCE){
     virtualKeys[10]->state = PRESSED;
   }
-  if(yPosJ2 < 400){
+  if(yPosJ2 < J_STBY-J_TOLERANCE){
     virtualKeys[11]->state = PRESSED;
   }
 
@@ -129,14 +133,7 @@ void loop() {
     if(v_key->state == PRESSED && v_key->prevState == RELEASED){
       keys_data |= v_key->transmitVal;
       v_key->prevState = v_key->state;
-
-      Serial.print("prevState: ");
-      Serial.println(v_key->prevState);
-
-
-      Serial.print("state: ");
-      Serial.println(v_key->state);
-
+      
       final_data |= keys_data;
       send_data(final_data);
       return;
@@ -156,7 +153,6 @@ void loop() {
 }
 
 void send_data(uint32_t data){
-  Serial.println("sent");
   sSerial.write(HEADER_BYTE);
   sSerial.write((char*)&data, 4);
 }

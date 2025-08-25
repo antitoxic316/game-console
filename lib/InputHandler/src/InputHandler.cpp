@@ -35,6 +35,9 @@ void InputHandler::readInput(){
     
     uint16_t key_input = currentMessage_.message & key_input_mask;
 
+    Serial.print("input handler got: ");
+    Serial.println(key_input);
+
     InputData in;
     in.key_byte = key_input;
     in.unpressed_key = currentMessage_.message & unpress_button_bit;

@@ -10,6 +10,9 @@ void ObjGrid::onKeyPressed(const PControlKeys key, const InputData input_data) {
     Serial.print("obj grid recieved: ");
     Serial.println(input_data.key_byte);
     
+    if(!(key >= 0 && key <= 3)){
+        
+    }
     
     switch(key){
         case LEFT:

@@ -35,6 +35,12 @@ public:
     }
 
     void onInput(InputData input){
+
+        Serial.print("obj ");
+        Serial.print(this->getName().c_str());
+        Serial.print(" got input ");
+        Serial.println(input.key_byte);
+
         currentInputData_ = input;
         controlsHandler_.processKeyByte(
             input.key_byte, input.unpressed_key
