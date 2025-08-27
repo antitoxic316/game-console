@@ -14,7 +14,7 @@ class InteractableWidget : public Widget, public I_InteractableWidget
 private:
     IGUICallbacks callbacks_;
 protected:
-    bool selected_;
+    bool selected_ = false;
 public:
     InteractableWidget(const std::string &name)
     : Widget(name)
@@ -24,15 +24,15 @@ public:
     ~InteractableWidget() = default;
 
     void onWidgetSelected() override {
-        selected_ = false;
+        selected_ = true;
         Serial.print(this->getName().c_str());
-        Serial.println("selected");
+        Serial.println(" selected");
     }
 
     void onWidgetUnSelected() override {
-        selected_ = true;
+        selected_ = false;
         Serial.print(this->getName().c_str());
-        Serial.println("unselected");
+        Serial.println(" unselected");
     }
 
     void onXPressed() override {
@@ -48,7 +48,8 @@ public:
     }
 
     void onAPressed() override {
-        Serial.println("a pressed");
+        Serial.println("a pressed from: ");
+        Serial.println(this->getName().c_str());
     }
 };
 

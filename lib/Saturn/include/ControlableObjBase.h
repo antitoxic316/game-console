@@ -35,7 +35,7 @@ public:
 
     }
     virtual void onKeyPressed(const KeysEnum key, const InputData i_data) override{
-        Serial.println("this sucks");
+    
     }
     virtual void onKeyUnpressed(const KeysEnum key, const InputData i_data) override{
 

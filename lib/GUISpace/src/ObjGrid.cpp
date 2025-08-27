@@ -2,17 +2,21 @@
 
 // QUICK HACK, LATER SHOULD BE FIXED
 void ObjGrid::onKeyPressed(const PControlKeys key, const InputData input_data) {
-    int i_v = 0, j_v = 0;
-    std::shared_ptr<InteractableWidget> newWidget(nullptr);
-
-    Serial.println("buffer check00");
 
     Serial.print("obj grid recieved: ");
     Serial.println(input_data.key_byte);
     
-    if(!(key >= 0 && key <= 3)){
-        
+    if(key >= 0 && key <= 3){
+        onNavigationKeyPressed(key);
+    } else {
+        onMiscKeyPressed(key);
     }
+};
+
+void ObjGrid::onNavigationKeyPressed(const PControlKeys key){
+    int i_v = 0, j_v = 0;
+    std::shared_ptr<InteractableWidget> newWidget(nullptr);
+
     
     switch(key){
         case LEFT:
@@ -23,26 +27,26 @@ void ObjGrid::onKeyPressed(const PControlKeys key, const InputData input_data) {
             break;
         case UP:
             newWidget = widgetGrid_[0][0];
-            Serial.print("name check");
+            Serial.print("name check ");
             Serial.println(newWidget->getName().c_str());
             break;
         case DOWN:
-            Serial.print("name check");
-            Serial.println(newWidget->getName().c_str());
             newWidget = widgetGrid_[1][0];
+            Serial.print("name check ");
+            Serial.println(newWidget->getName().c_str());
             break;
         default:
             break;
     }
-    if(!newWidget){
+    if(!newWidget)
         return;
-    }
-    newWidget->onWidgetSelected();
-    if(selectedWidget_){
+    if(selectedWidget_)
         selectedWidget_->onWidgetUnSelected();
-    }
+    newWidget->onWidgetSelected();
     selectedWidget_ = newWidget;
+}
 
+void ObjGrid::onMiscKeyPressed(const PControlKeys key){
     switch(key){
         case X:
             selectedWidget_->onXPressed();
@@ -57,5 +61,7 @@ void ObjGrid::onKeyPressed(const PControlKeys key, const InputData input_data) {
             Serial.println(selectedWidget_->getName().c_str());
             selectedWidget_->onAPressed();
             return;
-    };
-};
+        default:
+            break;
+    };   
+}

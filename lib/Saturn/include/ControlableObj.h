@@ -35,12 +35,6 @@ public:
     }
 
     void onInput(InputData input){
-
-        Serial.print("obj ");
-        Serial.print(this->getName().c_str());
-        Serial.print(" got input ");
-        Serial.println(input.key_byte);
-
         currentInputData_ = input;
         controlsHandler_.processKeyByte(
             input.key_byte, input.unpressed_key
@@ -59,8 +53,6 @@ public:
         key_states = controlsHandler_.getPressedKeysState();
         for(auto &key_state: key_states){
             if(key_state.second){
-
-            Serial.println("what the sigma");
                 keyPressedCallback_(key_state.first, currentInputData_);
                 controlsHandler_.softUnpressKey(key_state.first);
             }

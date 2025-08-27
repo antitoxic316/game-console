@@ -15,7 +15,8 @@ private:
 
     std::shared_ptr<InteractableWidget> selectedWidget_ = nullptr;
 
-    
+    void onNavigationKeyPressed(const PControlKeys key);
+    void onMiscKeyPressed(const PControlKeys key);
 public:
     ObjGrid(
         std::unordered_map<uint16_t, PControlKeys> keyMap

@@ -43,7 +43,7 @@ VirtualKey *virtualKeys[VIRTUAL_KEYS_NUM] = {
 };
 
 #define J_STBY 500 // standby joystick pwn reading
-#define J_TOLERANCE 100 // tolerance for signal noise
+#define J_TOLERANCE 180 // tolerance for signal noise
 
 int xPosJ1Prev = J_STBY;
 int yPosJ1Prev = J_STBY;

@@ -25,7 +25,7 @@ void GraphEnv::drawText(int x, int y, const char *text, int size){
     for(const char *c = text; *c != '\0'; c++){
         display_.write(*c);
     }
-    this->display();
+    //this->display();
 }
 
 void GraphEnv::display(){
