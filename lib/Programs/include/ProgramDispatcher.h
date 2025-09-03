@@ -31,6 +31,7 @@ public:
         auto prog_entry = progMap_.find(prog_name);
         if(prog_entry == progMap_.end()){
             Serial.println("no program with such name");
+            caller.uninterrupt();
             return;
         }
 

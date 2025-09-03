@@ -34,11 +34,6 @@ void InputHandler::readInput(){
     if(currentMessage_.byte_i < 4){
         return;
     }
-    
-    Serial.print("InputHandler got: ");
-    Serial.println(currentMessage_.message);
-    Serial.print("queue size: ");
-    Serial.println(inputQueue_.size());
 
     uint16_t key_input = currentMessage_.message & key_input_mask;
 
