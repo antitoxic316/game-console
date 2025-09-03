@@ -20,11 +20,15 @@ public:
     };
     ~GUISpace() = default;
 
-    void start();
+    void init();
 
     void addInteractableWidget(std::shared_ptr<InteractableWidget> widg){
       gameEnv_.add_dynamicObj(widg);
       mainObjGrid_->placeWidget(widg, widg->getGridI(), widg->getGridJ());
+    }
+
+    Saturn& getSaturnRef(){
+      return gameEnv_;
     }
 };
 

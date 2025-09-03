@@ -40,15 +40,17 @@ public:
     Dummygame(GraphEnv &graph_env, SoftwareSerial &controllerInput)
       : gameEnv_(graph_env, controllerInput)
     {
-      gameEnv_.addEvent("game over", [this](void *data){ this->gameEnv_.interrupt(); });
+      gameEnv_.addEvent("game over", [this](void *data){ endGame(); });
+      gameEnv_.game_name = "test";
     };
     ~Dummygame();
 
-    void start();
+    void init();
     void generateScreenBorders(int screen_w, int screen_h, bool inside, bool visible);
 
     void populateObjects(){
       generateScreenBorders(gameEnv_.getGraphicalEnv().getScreenW(), gameEnv_.getGraphicalEnv().getScreenH(), false, false);
+      
       std::shared_ptr<dummyObj> ralsei_obj = std::make_shared<dummyObj>("ralsei");
       ralsei_obj->setBitmap(ralsei_bitmap, 24, 24);
       gameEnv_.add_dynamicObj(ralsei_obj);
@@ -58,11 +60,18 @@ public:
       player_obj->move(94, 0);
       gameEnv_.add_controlableObj(player_obj);
     };
-    void restart(){
+
+    void endGame(){
       gameEnv_.interrupt();
       gameEnv_.clearObjects();
-      start();
+      init();
     };
+
+    //must be implemented so the game can be dispatched
+    //later that behaviour should be remade
+    Saturn* getSaturnPtr(){
+      return &gameEnv_;
+    }
 };
 
 #endif

@@ -4,6 +4,10 @@ MainMenuProgram::~MainMenuProgram()
 {
 }
 
+void MainMenuProgram::init(){
+    guiEnv_.init();
+}
+
 void MainMenuProgram::start(){
-    this->guiEnv_.start();
+    guiEnv_.getSaturnRef().run();
 }

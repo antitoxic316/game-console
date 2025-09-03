@@ -30,7 +30,8 @@ public:
     PingPong(GraphEnv &graph_env, SoftwareSerial &controllerInput)
         :gameEnv_(graph_env, controllerInput)
     {
-        gameInit();
+        gameEnv_.addEvent("game over", [this](void *data){ onGameOver(data); });
+        gameEnv_.game_name = "pingPONG";
     }
     ~PingPong();
 
@@ -43,12 +44,13 @@ public:
         gameEnv_.getGraphicalEnv().display();
         delay(500);
         gameEnv_.clearObjects();
-    }
-
-    void gameInit(){
-        this->gameEnv_.addEvent("game over", [this](void *data){ onGameOver(data); });
+        init();
     }
 
     void populateObjects();
-    void start();
+    void init();
+
+    Saturn* getSaturnPtr(){
+      return &gameEnv_;
+    }
 };

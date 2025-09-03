@@ -49,12 +49,10 @@ void Saturn::update_frame(void){
 }
 
 void Saturn::processInput(){
-    InputData input = inputHandler_.getInput();
-    if(!input.key_byte){
-        return;
-    }
+    std::unique_ptr<InputData> input = inputHandler_.getInput();
+    if(input == nullptr) return;
     for(auto &obj: controlableObjects_){
-        obj->onAbstractInput(input);
+        obj->onAbstractInput(*input);
     }
 }
 
@@ -153,12 +151,11 @@ Collision Saturn::getCollisionInfo(Obj *objA, Obj *objB){
     return coll_info;
 }
 
-void Saturn::start(){
+void Saturn::run(){
     ulong start_time = millis();
 
     while(true){
-        if(interrupted_){
-            interrupted_ = false;
+        if(isInterrupted()){
             return;
         }
 
@@ -171,10 +168,6 @@ void Saturn::start(){
         }
         delay(1);
     }
-}
-
-void Saturn::interrupt(){
-    interrupted_ = true;
 }
 
 void Saturn::clearObjects(){
@@ -192,9 +185,6 @@ void Saturn::handleEvents(DynamicObj* obj){
         if(handler_entry == eventHandlers_.end()){
             return;
         }
-
-        Serial.print("inside saturn handle events" );
-        Serial.println(handler_entry->first.c_str());
 
         std::function<void(void*)> event_f = handler_entry->second;
         event_f(emmitedEvents.front().data);

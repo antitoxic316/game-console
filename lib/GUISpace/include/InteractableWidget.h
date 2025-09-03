@@ -4,24 +4,44 @@
 #include "I_InteractableWidget.h"
 #include "Widget.h"
 
-
-struct IGUICallbacks {
-    std::function<void(I_InteractableWidget*)> pressedACallback;
-};
-
 class InteractableWidget : public Widget, public I_InteractableWidget
 {
 private:
-    IGUICallbacks callbacks_;
+    std::function<void(InteractableWidget*)> widgetSelectedCB_;
+    std::function<void(InteractableWidget*)> widgetUnselectedCB_;
+    std::function<void(InteractableWidget*)> pressedACB_;
+    std::function<void(InteractableWidget*)> pressedBCB_;
+    std::function<void(InteractableWidget*)> pressedYCB_;
+    std::function<void(InteractableWidget*)> pressedXCB_;
 protected:
     bool selected_ = false;
 public:
     InteractableWidget(const std::string &name)
-    : Widget(name)
+    :   Widget(name),
+        widgetSelectedCB_([](InteractableWidget *){}),
+        widgetUnselectedCB_([](InteractableWidget *){}),
+        pressedACB_([](InteractableWidget *){}),
+        pressedBCB_([](InteractableWidget *){}),
+        pressedYCB_([](InteractableWidget *){}),
+        pressedXCB_([](InteractableWidget *){})
     {
 
     }
     ~InteractableWidget() = default;
+
+    void setWidgetSelectedCallback(std::function<void(InteractableWidget *self)> cb){
+        widgetSelectedCB_ = cb;
+    }
+    void setWidgetUnSelectedCallback(std::function<void(InteractableWidget *self)> cb){
+        widgetUnselectedCB_ = cb;
+    }
+    void setAButtonPressedCallback(std::function<void(InteractableWidget *self)> cb){
+        Serial.println("set a callback set");
+        pressedACB_ = cb;
+    }
+    void setBButtonPressedCallback(std::function<void(InteractableWidget *self)> cb);
+    void setYButtonPressedCallback(std::function<void(InteractableWidget *self)> cb);
+    void setXButtonPressedCallback(std::function<void(InteractableWidget *self)> cb);
 
     void onWidgetSelected() override {
         selected_ = true;
@@ -48,8 +68,7 @@ public:
     }
 
     void onAPressed() override {
-        Serial.println("a pressed from: ");
-        Serial.println(this->getName().c_str());
+        pressedACB_(this);
     }
 };
 

@@ -16,9 +16,10 @@
 #include "ControlableObjBase.h"
 
 #include <InputHandler.h>
+#include <Program.h>
 #include <SSD1306_GraphEnv.h>
 
-class Saturn
+class Saturn : public Program
 {
 private:
     std::vector<std::shared_ptr<IControlableAbstr>> controlableObjects_;
@@ -31,10 +32,10 @@ private:
     GraphEnv &graphEnv_;
     InputHandler inputHandler_;
 
-    bool interrupted_ = false;
-
     int frame_rate = 25;
 public:
+    std::string game_name;
+
     Saturn(GraphEnv &graph_env, SoftwareSerial &controllerInput)
     : graphEnv_(graph_env),
     inputHandler_(controllerInput)
@@ -61,8 +62,7 @@ public:
 
     void update_frame(void);
 
-    void start();
-    void interrupt();
+    void run() override;
 
     void addEvent(std::string event_name, std::function<void(void*)> handler){
         eventHandlers_[event_name] = handler;

@@ -3,6 +3,8 @@
 #include <cstdint>
 
 void InputHandler::readInput(){
+    sSerial_.listen();
+
     uint64_t key_input_mask = 0xFFFF;
     uint64_t joystick_1_x_v_mask = 0xFF << 16;
     uint64_t joystick_1_y_v_mask = 0xFF << 24;
@@ -33,10 +35,14 @@ void InputHandler::readInput(){
         return;
     }
     
+    Serial.print("InputHandler got: ");
+    Serial.println(currentMessage_.message);
+    Serial.print("queue size: ");
+    Serial.println(inputQueue_.size());
+
     uint16_t key_input = currentMessage_.message & key_input_mask;
 
-    Serial.print("input handler got: ");
-    Serial.println(key_input);
+
 
     InputData in;
     in.key_byte = key_input;
@@ -51,11 +57,16 @@ void InputHandler::readInput(){
     this->inputQueue_.push(in);
 }
 
-InputData InputHandler::getInput(){
-    InputData input = this->inputQueue_.front();
-    if(!input.key_byte){
-        return input;
+std::unique_ptr<InputData> InputHandler::getInput(){
+    if(inputQueue_.empty()){
+        return nullptr;
     }
-    this->inputQueue_.pop();
-    return input;
+
+    InputData input = inputQueue_.front();
+    
+    inputQueue_.pop();
+
+    std::unique_ptr<InputData> id_ptr = std::make_unique<InputData>(input);
+    
+    return id_ptr;
 }

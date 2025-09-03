@@ -29,7 +29,6 @@ Dummygame::~Dummygame()
 {
 }
 
-void Dummygame::start(){
+void Dummygame::init(){
     populateObjects();
-    this->gameEnv_.start();
 }

@@ -1,26 +1,36 @@
 #include <PingPong.h>
 #include <DummyGame.h>
 #include <MainMenuProgram.h>
+#include <ProgramDispatcher.h>
 
+SoftwareSerial controllerSerial = SoftwareSerial(0, 1);
 
 void setup() {
   Serial.begin(19200);
   delay(100);
 
-  SoftwareSerial controllerSerial = SoftwareSerial(0, 1);
 
   GraphEnv graphEnv(128, 64);
 
-  while(true){
-    PingPong game(graphEnv, controllerSerial);
-    Dummygame game2(graphEnv, controllerSerial);
-    MainMenuProgram mainmenu(graphEnv, controllerSerial);
+  ProgramDispatcher pd;
 
-    game.start();
-    game2.start();
-    mainmenu.start();
-  }
+  PingPong game(graphEnv, controllerSerial);
+  Dummygame game2(graphEnv, controllerSerial);
+
+  game2.init();
+  game.init();
+  
+
+  pd.registerProgram("pingpong", game.getSaturnPtr());
+  pd.registerProgram("test", game2.getSaturnPtr());
+
+  MainMenuProgram mainmenu(graphEnv, controllerSerial, pd);
+
+  mainmenu.init();
+  mainmenu.start();
 }
 
 void loop() {
+  Serial.println("inside the main loop");
+  delay(50);
 }

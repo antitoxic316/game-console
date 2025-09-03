@@ -1,0 +1,7 @@
+{
+    "name": "Programs",
+    "version": "1.0.0",
+    "frameworks": ["arduino"],
+    "dependencies": [
+    ]
+}

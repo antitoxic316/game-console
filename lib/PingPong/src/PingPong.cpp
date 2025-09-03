@@ -29,15 +29,16 @@ PingPong::~PingPong()
 {
 }
 
-void PingPong::start(){
+void PingPong::init(){
     populateObjects();
-    gameEnv_.start();
+    
 }
 
 void PingPong::restart(){
     gameEnv_.interrupt();
     gameEnv_.clearObjects();
-    start();
+    gameEnv_.uninterrupt();
+    init();
 }
 
 void PingPong::populateObjects(){

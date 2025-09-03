@@ -73,7 +73,7 @@ public:
     ~InputHandler() = default;
 
     void readInput();
-    InputData getInput();
+    std::unique_ptr<InputData> getInput();
 };
 
 
