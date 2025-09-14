@@ -57,5 +57,5 @@ void PingPong::populateObjects(){
     std::shared_ptr<Player> p2_obj = std::make_shared<Player>("player2", P2_KEY_MAPPING);
     p2_obj->setBitmap(player_bitmap, 4, 32);
     p2_obj->move(110, 20);
-    this->gameEnv_.add_controlableObj(p2_obj);
+    this->gameEnv_.add_controlableObj(p2_obj, OBJ_SERVER_CONTROLLED);
 }

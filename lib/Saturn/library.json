@@ -14,6 +14,14 @@
         {
             "name": "Programs",
             "version": "1.0.0"
+        },
+        {
+            "name": "NetworkHandler",
+            "version": "1.0.0"
+        },
+        {
+            "name": "DatabaseHandler",
+            "version": "1.0.0"
         }
     ]
 }

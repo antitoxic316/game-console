@@ -160,6 +160,7 @@ void Saturn::run(){
         }
 
         inputHandler_.readInput();
+        //nh_.syncServer();
 
         ulong current_time = millis();
         if((current_time - start_time) > 1000ul/frame_rate){
@@ -174,6 +175,8 @@ void Saturn::clearObjects(){
    staticObjects_.clear();
    dynamicObjects_.clear();
    controlableObjects_.clear(); 
+
+   nh_.clearObjects();
 }
 
 void Saturn::handleEvents(DynamicObj* obj){

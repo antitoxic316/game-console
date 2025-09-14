@@ -2,6 +2,7 @@
 #include <DummyGame.h>
 #include <MainMenuProgram.h>
 #include <ProgramDispatcher.h>
+#include <NetworkHandler.h>
 
 SoftwareSerial controllerSerial = SoftwareSerial(0, 1);
 
@@ -17,9 +18,8 @@ void setup() {
   PingPong game(graphEnv, controllerSerial);
   Dummygame game2(graphEnv, controllerSerial);
 
-  game2.init();
   game.init();
-  
+  game2.init();  
 
   pd.registerProgram("pingpong", game.getSaturnPtr());
   pd.registerProgram("test", game2.getSaturnPtr());
