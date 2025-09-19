@@ -1,7 +1,6 @@
-#include "ObjGrid.h"
+#include  <InteractableGrid.h>
 
-// QUICK HACK, LATER SHOULD BE FIXED
-void ObjGrid::onKeyPressed(const PControlKeys key, const InputData input_data) {
+void InteractableGrid::onKeyPressed(const PControlKeys key, const InputData input_data) {
     if(key >= 0 && key <= 3){
         onNavigationKeyPressed(key);
     } else {
@@ -9,7 +8,7 @@ void ObjGrid::onKeyPressed(const PControlKeys key, const InputData input_data) {
     }
 };
 
-void ObjGrid::onNavigationKeyPressed(const PControlKeys key){
+void InteractableGrid::onNavigationKeyPressed(const PControlKeys key){
     int i_v = 0, j_v = 0;
     std::shared_ptr<InteractableWidget> newWidget(nullptr);
 
@@ -40,7 +39,7 @@ void ObjGrid::onNavigationKeyPressed(const PControlKeys key){
     selectedWidget_ = newWidget;
 }
 
-void ObjGrid::onMiscKeyPressed(const PControlKeys key){
+void InteractableGrid::onMiscKeyPressed(const PControlKeys key){
     switch(key){
         case X:
             selectedWidget_->onXPressed();
@@ -60,7 +59,7 @@ void ObjGrid::onMiscKeyPressed(const PControlKeys key){
     };   
 }
 
-std::shared_ptr<InteractableWidget> ObjGrid::getNearestWidget(int i_v, int j_v){
+std::shared_ptr<InteractableWidget> InteractableGrid::getNearestWidget(int i_v, int j_v){
     std::shared_ptr<InteractableWidget> widg(nullptr);
 
     // find widget at chosen direction

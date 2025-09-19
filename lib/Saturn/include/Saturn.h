@@ -46,13 +46,7 @@ private:
 public:
     std::string game_name;
 
-    Saturn(GraphEnv &graph_env, SoftwareSerial &controllerInput)
-    : graphEnv_(graph_env),
-    inputHandler_(controllerInput)
-    {
-        nh_.WPA2Connect(ssid, pass);
-        nh_.gameSyncInit();
-    };
+    Saturn(GraphEnv &graph_env, SoftwareSerial &controllerInput);
     ~Saturn(){};
 
     template<typename T>

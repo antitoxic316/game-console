@@ -15,7 +15,6 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <WiFiClient.h>
-#include "secrets.h"
 
 class NetworkHandler : public Program
 {

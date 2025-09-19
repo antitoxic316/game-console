@@ -1,4 +1,4 @@
-#include "NetworkHandler.h"
+#include <NetworkHandler.h>
 
 #include <Arduino.h>
 #include <ESP8266WiFi.h>
@@ -64,7 +64,7 @@ void NetworkHandler::WPA2Connect(const char *ssid, const char *pass){
   WiFi.begin(ssid, pass);
   
   while(WiFi.status() != WL_CONNECTED){
-    Serial.print(".");
+    Serial.println(".");
     delay(100);
   }
 
@@ -73,11 +73,6 @@ void NetworkHandler::WPA2Connect(const char *ssid, const char *pass){
 }
 
 void NetworkHandler::gameSyncInit(){
-  Serial.println("initializing udp socket");
-  udp_.begin(netwPort_);
-  Serial.print("udp socket initialized on port: ");
-  Serial.print(netwPort_);
-
   Serial.println("initializing tcp socket");
   IPAddress server(SERVER_IP_EXPR);
   int res = tcpCli_.connect(server, netwPort_);
@@ -88,8 +83,26 @@ void NetworkHandler::gameSyncInit(){
   Serial.print("tcp socket initialized on port: ");
   Serial.print(netwPort_);  
 
+  String msg;
+
+  while(msg != "GAME_STARTED"){
+
+    while (!tcpCli_.available()) {
+      delay(10);
+    }
+
+    String msg = tcpCli_.readStringUntil('\r');
+    Serial.println(msg);
+
+  }
+
   for(int i = 0; i < clientControlled_.size(); i++){
     Serial.println(clientControlled_[i].serialize().c_str());
     tcpCli_.println(clientControlled_[i].serialize().c_str());
   }
+
+  Serial.println("initializing udp socket");
+  udp_.begin(netwPort_);
+  Serial.print("udp socket initialized on port: ");
+  Serial.print(netwPort_);
 }

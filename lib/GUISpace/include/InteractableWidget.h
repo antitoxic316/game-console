@@ -43,31 +43,35 @@ public:
     void setYButtonPressedCallback(std::function<void(InteractableWidget *self)> cb);
     void setXButtonPressedCallback(std::function<void(InteractableWidget *self)> cb);
 
-    void onWidgetSelected() override {
+    virtual void onWidgetSelected() override {
         selected_ = true;
         Serial.print(this->getName().c_str());
         Serial.println(" selected");
     }
 
-    void onWidgetUnSelected() override {
+    virtual void onWidgetUnSelected() override {
         selected_ = false;
         Serial.print(this->getName().c_str());
         Serial.println(" unselected");
     }
 
-    void onXPressed() override {
+    //calls set previously callback if not overriden
+    virtual void onXPressed() override {
 
     }
 
-    void onYPressed() override {
+    //calls set previously callback if not overriden
+    virtual void onYPressed() override {
         
     }
 
-    void onBPressed() override {
+    //calls set previously callback if not overriden
+    virtual void onBPressed() override {
         
     }
 
-    void onAPressed() override {
+    //calls set previously callback if not overriden
+    virtual void onAPressed() override {
         pressedACB_(this);
     }
 };

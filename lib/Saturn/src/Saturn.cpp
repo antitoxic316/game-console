@@ -1,6 +1,13 @@
 #include "Saturn.h"
 
 #include <cmath>
+#include <secrets.h>
+
+Saturn::Saturn(GraphEnv &graph_env, SoftwareSerial &controllerInput)
+: graphEnv_(graph_env),
+inputHandler_(controllerInput)
+{
+};
 
 void Saturn::update_frame(void){
     graphEnv_.clearDisplay();
@@ -153,6 +160,10 @@ Collision Saturn::getCollisionInfo(Obj *objA, Obj *objB){
 
 void Saturn::run(){
     ulong start_time = millis();
+
+
+    nh_.WPA2Connect(ssid, pass);
+    nh_.gameSyncInit();
 
     while(true){
         if(isInterrupted()){

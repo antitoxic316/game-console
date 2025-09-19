@@ -50,5 +50,5 @@ std::string NetworkedObj::serialize(){
   j["x"] = std::any_cast<int>(fieldMap_["x"].getter());
   j["y"] = std::any_cast<int>(fieldMap_["y"].getter());
 
-  return j.dump();
+  return j.dump(); 
 }
