@@ -6,15 +6,9 @@
 
 #include <Arduino.h>
 
-#include <nlohmann/json.hpp>
-using namespace nlohmann;
-
-auto j = json::parse(R"({"x": 100, "y": 5})");
-
-
 //c++ has no reflection lol
-std::unordered_map<std::string, FieldDescription> NetworkedObj::makeFieldMapFromObj(std::shared_ptr<Obj> obj){
-  std::unordered_map<std::string, FieldDescription> map;
+std::map<std::string, FieldDescription> NetworkedObj::makeFieldMapFromObj(std::shared_ptr<Obj> obj){
+  std::map<std::string, FieldDescription> map;
   
   FieldDescription field_x;
   field_x.getter = getter_generic_wrapper(&Obj::getX, obj);
@@ -47,8 +41,9 @@ void NetworkedObj::registerField(std::string name, FieldDescription fd){
 }
 
 std::string NetworkedObj::serialize(){
-  j["x"] = std::any_cast<int>(fieldMap_["x"].getter());
-  j["y"] = std::any_cast<int>(fieldMap_["y"].getter());
+  //j["x"] = std::any_cast<int>(fieldMap_["x"].getter());
+  //j["y"] = std::any_cast<int>(fieldMap_["y"].getter());
 
-  return j.dump(); 
+  //return j.dump(); 
+  return std::string(nullptr);
 }

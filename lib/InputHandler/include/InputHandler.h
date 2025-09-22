@@ -9,6 +9,7 @@
 #include <Wire.h>
 
 #include <queue>
+#include <map>
 
 struct JoystickInfo{
     int8_t acc_x;
@@ -34,7 +35,7 @@ enum PControlKeys {
     P2_LEFT, P2_RIGHT, P2_UP, P2_DOWN, P2_X, P2_Y, P2_B, P2_A
 };
 
-const std::unordered_map<uint16_t, PControlKeys> DEFAULT_KEY_MAPPING = {
+const std::map<uint16_t, PControlKeys> DEFAULT_KEY_MAPPING = {
     {1, PControlKeys::LEFT},
     {2, PControlKeys::RIGHT},
     {4, PControlKeys::UP},

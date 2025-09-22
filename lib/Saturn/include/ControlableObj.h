@@ -20,7 +20,7 @@ private:
 public:
     ControlableObj(
         const std::string &name,
-        std::unordered_map<uint16_t, KeysEnum> keyMap
+        std::map<uint16_t, KeysEnum> keyMap
     ) 
         : DynamicObj(name), 
         controlsHandler_(keyMap)
@@ -42,7 +42,7 @@ public:
     }
 
     void onFramePassed(){
-        std::unordered_map<KeysEnum, bool> key_states;
+        std::map<KeysEnum, bool> key_states;
 
         key_states = controlsHandler_.getHeldKeysState();
         for(auto &key_state: key_states){

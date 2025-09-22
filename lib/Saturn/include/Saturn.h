@@ -32,7 +32,7 @@ private:
     std::vector<std::shared_ptr<NetworkedObj>> clientControlledObjects_;
     std::vector<std::shared_ptr<NetworkedObj>> serverControlledObjects_;
 
-    std::unordered_map<std::string, std::function<void(void*)>> eventHandlers_;
+    std::map<std::string, std::function<void(void*)>> eventHandlers_;
 
     GraphEnv &graphEnv_;
     InputHandler inputHandler_;
@@ -40,7 +40,7 @@ private:
     NetworkHandler nh_;
     //DatabaseHandler dbh_;
 
-
+    bool handleColisions_ = true;
 
     int frame_rate = 25;
 public:
@@ -48,6 +48,10 @@ public:
 
     Saturn(GraphEnv &graph_env, SoftwareSerial &controllerInput);
     ~Saturn(){};
+
+    void setHandleCollisionsFlag(bool v){
+        handleColisions_ = v;
+    }
 
     template<typename T>
     void add_dynamicObj(std::shared_ptr<T> obj_ptr, uint16_t flags = OBJ_PASSIVE);
@@ -84,6 +88,7 @@ void Saturn::add_dynamicObj(std::shared_ptr<T> obj_ptr, uint16_t flags){
     static_assert(std::is_base_of<DynamicObj, T>::value, 
                        "Argument failed check for inheritence from DynamicObj");
     dynamicObjects_.push_back(obj_ptr);
+
 
     nh_.registerObj(obj_ptr, flags);
 }

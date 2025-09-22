@@ -1,7 +1,7 @@
 #ifndef _ControlsHandlers_H_
 #define _ControlsHandlers_H_
 
-#include <unordered_map>
+#include <map>
 #include <cstdint>
 #include <type_traits>
 
@@ -13,18 +13,18 @@ class ControlsHandler
     static_assert(std::is_enum<KeysEnum>::value, 
                     "ControlKeysEnum must be enum");
 private:
-    std::unordered_map<uint16_t, KeysEnum> keyMap_;
-    std::unordered_map<KeysEnum, bool> heldKeys_;
-    std::unordered_map<KeysEnum, bool> pressedKeys_;
-    std::unordered_map<KeysEnum, bool> unpressedKeys_;
+    std::map<uint16_t, KeysEnum> keyMap_;
+    std::map<KeysEnum, bool> heldKeys_;
+    std::map<KeysEnum, bool> pressedKeys_;
+    std::map<KeysEnum, bool> unpressedKeys_;
     
 
-    static std::unordered_map<KeysEnum, bool> 
+    static std::map<KeysEnum, bool> 
     generatePressedKeysVector(
-        std::unordered_map<uint16_t, KeysEnum> keyMap_
+        std::map<uint16_t, KeysEnum> keyMap_
     );
 public:
-    ControlsHandler(std::unordered_map<uint16_t, KeysEnum> keyMap)
+    ControlsHandler(std::map<uint16_t, KeysEnum> keyMap)
         : keyMap_(keyMap),
           heldKeys_(generatePressedKeysVector(keyMap)),
           pressedKeys_(generatePressedKeysVector(keyMap)),
@@ -32,19 +32,19 @@ public:
     };
     ~ControlsHandler() = default;
 
-    void setByteToKeyMap(std::unordered_map<uint16_t, KeysEnum> map){
+    void setByteToKeyMap(std::map<uint16_t, KeysEnum> map){
         keyMap_ = map;
     }
 
     void processKeyByte(uint16_t input, bool unpressed);
     
-    std::unordered_map<KeysEnum, bool> getHeldKeysState(){
+    std::map<KeysEnum, bool> getHeldKeysState(){
         return heldKeys_;
     }
-    std::unordered_map<KeysEnum, bool> getPressedKeysState(){
+    std::map<KeysEnum, bool> getPressedKeysState(){
         return pressedKeys_;
     }
-    std::unordered_map<KeysEnum, bool> getUnpressedKeysState(){
+    std::map<KeysEnum, bool> getUnpressedKeysState(){
         return unpressedKeys_;
     }
 
@@ -68,10 +68,10 @@ public:
 };
 
 template<typename KeysEnum>
-std::unordered_map<KeysEnum, bool> 
-ControlsHandler<KeysEnum>::generatePressedKeysVector(std::unordered_map<uint16_t, KeysEnum> keyMap)
+std::map<KeysEnum, bool> 
+ControlsHandler<KeysEnum>::generatePressedKeysVector(std::map<uint16_t, KeysEnum> keyMap)
 {
-    std::unordered_map<KeysEnum, bool> heldKeys_;
+    std::map<KeysEnum, bool> heldKeys_;
 
     for(auto &it: keyMap){
         heldKeys_.insert({it.second, false});

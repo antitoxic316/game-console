@@ -25,7 +25,7 @@ protected:
     void onMiscKeyPressed(const PControlKeys key);
     std::shared_ptr<InteractableWidget> getNearestWidget(int i_v, int j_v);
 public:
-  InteractableGrid(std::string name) :
+  InteractableGrid(const std::string &name) :
     ControlableWidget(name)
   {
   }
@@ -42,6 +42,10 @@ public:
   void onKeyUnpressed(const PControlKeys key, const InputData input_data) override{
     
   };
+
+  std::shared_ptr<InteractableWidget> getChildWidget(int i, int j){
+    return widgetGrid_[i][j];
+  }
 
   ~InteractableGrid() = default;
 };

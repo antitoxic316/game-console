@@ -10,7 +10,7 @@ private:
 public:
     dummyPlayerObj(
         const std::string &name,
-        std::unordered_map<uint16_t, PControlKeys> keyMap
+        std::map<uint16_t, PControlKeys> keyMap
     )
         : ControlableObjBase(name, keyMap){
     }

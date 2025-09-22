@@ -4,7 +4,7 @@
 #include "InetMsg.h"
 
 #include <vector>
-#include <unordered_map>
+#include <map>
 #include <functional>
 #include <any>
 #include <memory>
@@ -33,8 +33,8 @@ class NetworkedObj
 {
 private:
   std::shared_ptr<Obj> baseObj_;
-  std::unordered_map<std::string, FieldDescription> fieldMap_;
-  std::unordered_map<std::string, FieldDescription> makeFieldMapFromObj(std::shared_ptr<Obj> obj);
+  std::map<std::string, FieldDescription> fieldMap_;
+  std::map<std::string, FieldDescription> makeFieldMapFromObj(std::shared_ptr<Obj> obj);
 public:
   NetworkedObj(std::shared_ptr<Obj> obj) :
     baseObj_(obj),

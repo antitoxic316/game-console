@@ -24,6 +24,9 @@ void Saturn::update_frame(void){
         handleEvents(obj.get());
 
         //object collisions resolvment
+        if(!handleColisions_){
+            continue;
+        }
         auto obj_colls = getObjectCollisions(obj.get());
         if(!obj_colls){
             continue;
@@ -162,8 +165,8 @@ void Saturn::run(){
     ulong start_time = millis();
 
 
-    nh_.WPA2Connect(ssid, pass);
-    nh_.gameSyncInit();
+    //nh_.WPA2Connect(ssid, pass);
+    //nh_.gameSyncInit();
 
     while(true){
         if(isInterrupted()){

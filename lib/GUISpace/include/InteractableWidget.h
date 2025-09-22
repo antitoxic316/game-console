@@ -36,7 +36,6 @@ public:
         widgetUnselectedCB_ = cb;
     }
     void setAButtonPressedCallback(std::function<void(InteractableWidget *self)> cb){
-        Serial.println("set a callback set");
         pressedACB_ = cb;
     }
     void setBButtonPressedCallback(std::function<void(InteractableWidget *self)> cb);
@@ -46,13 +45,13 @@ public:
     virtual void onWidgetSelected() override {
         selected_ = true;
         Serial.print(this->getName().c_str());
-        Serial.println(" selected");
+        Serial.println(F(" selected"));
     }
 
     virtual void onWidgetUnSelected() override {
         selected_ = false;
         Serial.print(this->getName().c_str());
-        Serial.println(" unselected");
+        Serial.println(F(" unselected"));
     }
 
     //calls set previously callback if not overriden

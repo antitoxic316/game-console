@@ -12,7 +12,6 @@ public:
     
   }
   virtual void run(){
-    Serial.println("wrong run");
   }
   virtual void interrupt(){
     _interrupted = true;

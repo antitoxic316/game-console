@@ -14,8 +14,8 @@ private:
   Saturn &satRef_;
 public:
   WidgetController(Saturn &saturn, ControlableWidget *root) 
-  : satRef_(saturn),
-  ControlableObjBase("WidgetController", DEFAULT_KEY_MAPPING)
+  : ControlableObjBase("WidgetController", DEFAULT_KEY_MAPPING),
+    satRef_(saturn)
   {
     //first object is always main control grid
     controlStack_.push(root);

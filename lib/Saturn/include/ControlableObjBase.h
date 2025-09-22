@@ -11,7 +11,7 @@ class ControlableObjBase : public ControlableObj<KeysEnum>, public IControlableO
 {
 private:
 public:
-    ControlableObjBase(const std::string &name, std::unordered_map<uint16_t, KeysEnum> keyMap)
+    ControlableObjBase(const std::string &name, std::map<uint16_t, KeysEnum> keyMap)
         :ControlableObj<KeysEnum>(name, keyMap)
     {   
         this->setKeyHeldCallback(

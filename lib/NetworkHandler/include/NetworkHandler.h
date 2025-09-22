@@ -3,8 +3,6 @@
 #include <queue>
 #include <memory>
 
-#include <nlohmann/json.hpp>
-
 #include "InetMsg.h"
 #include "NetworkedObj.h"
 

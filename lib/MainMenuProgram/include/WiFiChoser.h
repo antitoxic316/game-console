@@ -1,38 +1,31 @@
 #pragma once
 
-#ifndef _MainMenuProgram_H_
-#define _MainMenuProgram_H_
+#ifndef _WiFiChoser_H_
+#define _WiFiChoser_H_
 
 #include <GUISpace.h>
-#include <ProgramDispatcher.h>
 #include <Keyboard.h>
 
-const uint8_t test_label[8] = {0xFF, 0xFF, 0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,};
-
-class MainMenuProgram
+class WiFiChoser
 {
 private:
     GUISpace guiEnv_;
-    ProgramDispatcher &pd_;
-    
 public:
-    MainMenuProgram(GraphEnv &graph_env, SoftwareSerial &controllerInput, ProgramDispatcher &pd) 
-        :guiEnv_(graph_env, controllerInput),
-         pd_(pd)
+    WiFiChoser(GraphEnv &graph_env, SoftwareSerial &controllerInput) 
+        :guiEnv_(graph_env, controllerInput)
     {
-        std::shared_ptr<Keyboard> keyboard = std::make_shared<Keyboard>("keyboard");
-        keyboard->setGridI(1);
-        keyboard->setGridJ(0);
-        keyboard->move(20, 0);
-        
-
-        std::shared_ptr<Widget> text_buffer = std::make_shared<Widget>("txt_buff");
-        text_buffer->move(0, 0);
+        init();
     }
-    ~MainMenuProgram();
+    ~WiFiChoser() = default;
 
     void init();
-    void start();
+    void start() {
+        guiEnv_.getSaturnRef().run();
+    };
+
+    Saturn* getSaturnPtr(){
+      return &(guiEnv_.getSaturnRef());
+    }
 };
 
 #endif

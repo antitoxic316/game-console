@@ -4,7 +4,7 @@
 
 #include <vector>
 #include <memory>
-#include <unordered_map>
+#include <map>
 #include <string>
 
 #include <Arduino.h>
@@ -12,7 +12,7 @@
 class ProgramDispatcher
 {
 private:
-    std::unordered_map<std::string, Program *> progMap_;
+    std::map<std::string, Program *> progMap_;
     //std::vector<ProgramPriority> bgProgs_;
 public:
     ProgramDispatcher(){
@@ -23,14 +23,14 @@ public:
     }
 
     void callProgram(Program &caller, const std::string &prog_name){
-        Serial.print("called program: ");
+        Serial.print(F("called program: "));
         Serial.println(prog_name.c_str());
 
         caller.interrupt();
 
         auto prog_entry = progMap_.find(prog_name);
         if(prog_entry == progMap_.end()){
-            Serial.println("no program with such name");
+            Serial.println(F("no program with such name"));
             caller.uninterrupt();
             return;
         }

@@ -7,7 +7,17 @@ class ControlableWidget : public IControlableObj<PControlKeys>, public Interacta
 {
 private:
 public:
-  ControlableWidget(std::string name):
+  ControlableWidget(const std::string &name):
     InteractableWidget(name){
+  }
+
+  virtual void onWidgetSelected() override {
+    InteractableWidget::onWidgetSelected();
+    emitEvent("widgetTakeControl", this);
+  }
+
+  virtual void onWidgetUnSelected() override {
+    InteractableWidget::onWidgetUnSelected();
+    emitEvent("widgetReturnControl", nullptr);
   }
 };

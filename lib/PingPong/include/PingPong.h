@@ -11,12 +11,12 @@ static const uint8_t player_bitmap[] PROGMEM  = {
     0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff
 };
 
-const std::unordered_map<uint16_t, PControlKeys> P1_KEY_MAPPING = {
+const std::map<uint16_t, PControlKeys> P1_KEY_MAPPING = {
     {1, PControlKeys::UP},
     {2, PControlKeys::DOWN}
 };
 
-const std::unordered_map<uint16_t, PControlKeys> P2_KEY_MAPPING = {
+const std::map<uint16_t, PControlKeys> P2_KEY_MAPPING = {
     {256, PControlKeys::P2_UP},
     {512, PControlKeys::P2_DOWN}
 };
