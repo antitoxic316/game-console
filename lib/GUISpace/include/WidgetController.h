@@ -26,6 +26,7 @@ public:
   }
 
   void onWidgetTakeControl(void *caller){
+    Serial.println("took control");
     ControlableWidget *cw;
     cw = static_cast<ControlableWidget*>(caller);
 
@@ -40,6 +41,7 @@ public:
     ControlableWidget *activeWidget;
 
     activeWidget = controlStack_.top();
+    Serial.println(activeWidget->getName().c_str());
     activeWidget->onKeyPressed(key, input_data);
   }
 };

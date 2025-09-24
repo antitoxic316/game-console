@@ -8,7 +8,6 @@ class IDynamicObj
 private:
 public:
     IDynamicObj(){
-
     }
     virtual ~IDynamicObj() = default;
     virtual void onFramePassed() = 0;

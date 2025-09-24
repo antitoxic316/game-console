@@ -5,6 +5,7 @@
 
 #include <GUISpace.h>
 #include <Keyboard.h>
+#include <TextBufferWidget.h>
 
 class WiFiChoser
 {

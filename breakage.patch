@@ -1,0 +1,255 @@
+diff --git a/.gitignore b/.gitignore
+index af96791..b27628a 100644
+--- a/.gitignore
++++ b/.gitignore
+@@ -1,2 +1,4 @@
+ .vscode
+ build
++lib/NetworkHandler/include/secrets.h
++lib/NetworkHandler/src/secrets.c
+\ No newline at end of file
+diff --git a/lib/GUISpace/include/Keyboard.h b/lib/GUISpace/include/Keyboard.h
+index 2035d62..77d7eb8 100644
+--- a/lib/GUISpace/include/Keyboard.h
++++ b/lib/GUISpace/include/Keyboard.h
+@@ -3,8 +3,8 @@
+ #include <InteractableGrid.h>
+ #include <ButtonWidget.h>
+ 
+-#define keys_W 5
+-#define keys_H 5
++#define keys_W 2
++#define keys_H 2
+ 
+ class Keyboard : public InteractableGrid
+ {
+@@ -24,7 +24,7 @@ public:
+         key_btn->setLabel(btn_name);
+         key_btn->setGridI(i);
+         key_btn->setGridJ(j);
+-        key_btn->move(30+i, 10+j);
++        key_btn->move(i*5, j*5);
+         key_btn->setAButtonPressedCallback([this, btn_name](InteractableWidget *w){
+           /*
+             Serial.print(btn_name.c_str());
+@@ -36,4 +36,9 @@ public:
+       }
+     }
+   }
++
++  void drawCallback(GraphEnv &env) override {
++    env.drawLine(getX(), getY(), getX(), env.getScreenH());
++    env.drawLine(getX(), getY(), env.getScreenW(), getY());
++  }
+ };
+\ No newline at end of file
+diff --git a/lib/GUISpace/include/WidgetController.h b/lib/GUISpace/include/WidgetController.h
+index d4588c4..eabadb0 100644
+--- a/lib/GUISpace/include/WidgetController.h
++++ b/lib/GUISpace/include/WidgetController.h
+@@ -26,6 +26,7 @@ public:
+   }
+ 
+   void onWidgetTakeControl(void *caller){
++    Serial.println("took control");
+     ControlableWidget *cw;
+     cw = static_cast<ControlableWidget*>(caller);
+ 
+@@ -40,6 +41,7 @@ public:
+     ControlableWidget *activeWidget;
+ 
+     activeWidget = controlStack_.top();
++    Serial.println(activeWidget->getName().c_str());
+     activeWidget->onKeyPressed(key, input_data);
+   }
+ };
+\ No newline at end of file
+diff --git a/lib/InputHandler/src/InputHandler.cpp b/lib/InputHandler/src/InputHandler.cpp
+index 2c52217..de74048 100644
+--- a/lib/InputHandler/src/InputHandler.cpp
++++ b/lib/InputHandler/src/InputHandler.cpp
+@@ -37,8 +37,6 @@ void InputHandler::readInput(){
+ 
+     uint16_t key_input = currentMessage_.message & key_input_mask;
+ 
+-
+-
+     InputData in;
+     in.key_byte = key_input;
+     in.unpressed_key = currentMessage_.message & unpress_button_bit;
+diff --git a/lib/MainMenuProgram/src/WiFiChoser.cpp b/lib/MainMenuProgram/src/WiFiChoser.cpp
+index d003963..3edab9c 100644
+--- a/lib/MainMenuProgram/src/WiFiChoser.cpp
++++ b/lib/MainMenuProgram/src/WiFiChoser.cpp
+@@ -4,7 +4,7 @@ void WiFiChoser::init(){
+   std::shared_ptr<Keyboard> keyboard = std::make_shared<Keyboard>("keyboard");
+   keyboard->setGridI(1);
+   keyboard->setGridJ(0);
+-  keyboard->move(20, 0);
++  keyboard->move(40, 0);
+   guiEnv_.addWidgetGrid(keyboard);
+   
+   std::shared_ptr<ButtonWidget> confirm_btn = std::make_shared<ButtonWidget>("confirm");
+diff --git a/lib/SSD1306_GraphEnv/include/SSD1306_GraphEnv.h b/lib/SSD1306_GraphEnv/include/SSD1306_GraphEnv.h
+index 242ea17..4684f70 100644
+--- a/lib/SSD1306_GraphEnv/include/SSD1306_GraphEnv.h
++++ b/lib/SSD1306_GraphEnv/include/SSD1306_GraphEnv.h
+@@ -75,6 +75,7 @@ public:
+     void drawText(int x, int y, const char *text, int size);
+     void display();
+     void clearDisplay();
++    void drawLine(int x1, int y1, int x2, int y2);
+ };
+ 
+ 
+diff --git a/lib/SSD1306_GraphEnv/src/SSD1306_GraphEnv.cpp b/lib/SSD1306_GraphEnv/src/SSD1306_GraphEnv.cpp
+index 7dc93f6..bded897 100644
+--- a/lib/SSD1306_GraphEnv/src/SSD1306_GraphEnv.cpp
++++ b/lib/SSD1306_GraphEnv/src/SSD1306_GraphEnv.cpp
+@@ -28,6 +28,10 @@ void GraphEnv::drawText(int x, int y, const char *text, int size){
+     //this->display();
+ }
+ 
++void GraphEnv::drawLine(int x1, int y1, int x2, int y2){
++    display_.drawLine(x1, y1, x2, y2, 1);
++}
++
+ void GraphEnv::display(){
+     display_.display();
+ }
+diff --git a/lib/Saturn/include/ControlableObj.h b/lib/Saturn/include/ControlableObj.h
+index 2aa88c5..bd14b78 100644
+--- a/lib/Saturn/include/ControlableObj.h
++++ b/lib/Saturn/include/ControlableObj.h
+@@ -67,15 +67,15 @@ public:
+     }
+ 
+     void setKeyHeldCallback(std::function<void(KeysEnum, InputData)> keyHeldCallback){
+-        this->keyHeldCallback_ = keyHeldCallback;
++        keyHeldCallback_ = keyHeldCallback;
+     }
+ 
+     void setKeyPressedCallback(std::function<void(KeysEnum, InputData)> keyPressedCallback){
+-        this->keyPressedCallback_ = keyPressedCallback;
++        keyPressedCallback_ = keyPressedCallback;
+     }
+ 
+     void setKeyUnpressedCallback(std::function<void(KeysEnum, InputData)> keyUnpressedCallback){
+-        this->keyUnpressedCallback_ = keyUnpressedCallback;
++        keyUnpressedCallback_ = keyUnpressedCallback;
+     }
+ 
+     virtual ~ControlableObj() = default;
+diff --git a/lib/Saturn/include/ControlableObjBase.h b/lib/Saturn/include/ControlableObjBase.h
+index 5022852..c15d0a1 100644
+--- a/lib/Saturn/include/ControlableObjBase.h
++++ b/lib/Saturn/include/ControlableObjBase.h
+@@ -14,17 +14,17 @@ public:
+     ControlableObjBase(const std::string &name, std::map<uint16_t, KeysEnum> keyMap)
+         :ControlableObj<KeysEnum>(name, keyMap)
+     {   
+-        this->setKeyHeldCallback(
++        setKeyHeldCallback(
+             [this](const KeysEnum key, const InputData i_data){
+                 static_cast<Derived*>(this)->onKeyHeld(key, i_data);
+             }
+         );
+-        this->setKeyPressedCallback(
++        setKeyPressedCallback(
+             [this](const KeysEnum key, const InputData i_data){
+                 static_cast<Derived*>(this)->onKeyPressed(key, i_data);
+             }
+         );
+-        this->setKeyUnpressedCallback(
++        setKeyUnpressedCallback(
+             [this](const KeysEnum key, const InputData i_data){
+                 static_cast<Derived*>(this)->onKeyUnpressed(key, i_data);
+             }
+diff --git a/lib/Saturn/include/DynamicObj.h b/lib/Saturn/include/DynamicObj.h
+index dde704a..904e06c 100644
+--- a/lib/Saturn/include/DynamicObj.h
++++ b/lib/Saturn/include/DynamicObj.h
+@@ -39,25 +39,26 @@ public:
+     virtual ~DynamicObj() = default;
+ 
+     void onFramePassed(){
+-        this->framePassedCallback_();
++        framePassedCallback_();
+     }
+ 
+     void onCollision(const Collision coll_info){
+-        this->collisionCallback_(coll_info);
++        collisionCallback_(coll_info);
+     }
+ 
+     void setCollisionCallback(std::function<void(const Collision coll_info)> collisionCallback_){
+-        this->collisionCallback_ = collisionCallback_;
++        collisionCallback_ = collisionCallback_;
+     }
+ 
+     void setFramePassedCallback(std::function<void()> framePassedCallback_){
+-        this->framePassedCallback_ = framePassedCallback_;
++        framePassedCallback_ = framePassedCallback_;
+     }
+ 
+     //TODO make this more c++ish??
+-    void emitEvent(const std::string &event_name, void* data);
++    void emitEvent(const std::string event_name, void* data);
++
+     std::queue<ObjEvent> getEvents(){
+-        return this->eventQueue_;
++        return eventQueue_;
+     }
+ };
+ 
+diff --git a/lib/Saturn/include/IDynamicObj.h b/lib/Saturn/include/IDynamicObj.h
+index 2264c2f..7f61586 100644
+--- a/lib/Saturn/include/IDynamicObj.h
++++ b/lib/Saturn/include/IDynamicObj.h
+@@ -8,7 +8,6 @@ class IDynamicObj
+ private:
+ public:
+     IDynamicObj(){
+-
+     }
+     virtual ~IDynamicObj() = default;
+     virtual void onFramePassed() = 0;
+diff --git a/lib/Saturn/src/DynamicObj.cpp b/lib/Saturn/src/DynamicObj.cpp
+index d40fe0f..c7e08e0 100644
+--- a/lib/Saturn/src/DynamicObj.cpp
++++ b/lib/Saturn/src/DynamicObj.cpp
+@@ -2,7 +2,8 @@
+ 
+ #include <Arduino.h>
+ 
+-void DynamicObj::emitEvent(const std::string &event_name, void* data){
++void DynamicObj::emitEvent(const std::string event_name, void* data){
+     ObjEvent e = {event_name, data};
+     eventQueue_.push(e);
++    Serial.println("emmitedevent");
+ }
+diff --git a/lib/Saturn/src/Saturn.cpp b/lib/Saturn/src/Saturn.cpp
+index e598440..5058020 100644
+--- a/lib/Saturn/src/Saturn.cpp
++++ b/lib/Saturn/src/Saturn.cpp
+@@ -180,6 +180,8 @@ void Saturn::run(){
+         if((current_time - start_time) > 1000ul/frame_rate){
+             start_time = current_time;
+             update_frame();
++            Serial.println(F("free memory: "));
++            Serial.println(ESP.getFreeHeap());
+         }
+         delay(1);
+     }
+@@ -195,7 +197,10 @@ void Saturn::clearObjects(){
+ 
+ void Saturn::handleEvents(DynamicObj* obj){
+     std::queue<ObjEvent> emmitedEvents = obj->getEvents();
+-    
++
++    if(emmitedEvents.size() > 0) 
++        Serial.println(emmitedEvents.size());
++
+     for(; !emmitedEvents.empty(); emmitedEvents.pop()){
+         std::string ev_name = emmitedEvents.front().ev_name;
+         auto handler_entry = eventHandlers_.find(ev_name);

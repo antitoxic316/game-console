@@ -56,8 +56,8 @@ public:
 
     //TODO make this more c++ish??
     void emitEvent(const std::string &event_name, void* data);
-    std::queue<ObjEvent> getEvents(){
-        return this->eventQueue_;
+    std::queue<ObjEvent> *getEvents(){
+        return &eventQueue_;
     }
 };
 

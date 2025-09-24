@@ -12,8 +12,6 @@ void setup() {
 
   Serial.begin(19200);
   delay(2000);
-
-  uint32_t free_mem;
   
   ProgramDispatcher pd;
 
@@ -21,31 +19,16 @@ void setup() {
   //Dummygame game2(graphEnv, controllerSerial);
   WiFiChoser wifiprog(graphEnv, controllerSerial);
 
-  Serial.printf("%d    %d\r\n\r", __LINE__, ESP.getFreeHeap());
-
-
-
   //game.init();
 
-  Serial.printf("%d    %d\r\n\r", __LINE__, ESP.getFreeHeap());
-
   //game2.init();  
-  //wifiprog.init();
-  
-  Serial.printf("%d    %d\r\n\r", __LINE__, ESP.getFreeHeap());
-
+  wifiprog.init();
 
   //pd.registerProgram("pingpong", game.getSaturnPtr());
   //pd.registerProgram("test", game2.getSaturnPtr());
   pd.registerProgram("wifi", wifiprog.getSaturnPtr());
-  
-  Serial.printf("%d    %d\r\n\r", __LINE__, ESP.getFreeHeap());
-
 
   MainMenuProgram mainmenu(graphEnv, controllerSerial, pd);
-  
-  Serial.printf("%d    %d\r\n\r", __LINE__, ESP.getFreeHeap());
-
   mainmenu.init();
 
   Serial.printf("%d    %d\r\n\r", __LINE__, ESP.getFreeHeap());

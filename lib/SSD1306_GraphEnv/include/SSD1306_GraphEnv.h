@@ -75,6 +75,7 @@ public:
     void drawText(int x, int y, const char *text, int size);
     void display();
     void clearDisplay();
+    void drawLine(int x1, int y1, int x2, int y2);
 };
 
 

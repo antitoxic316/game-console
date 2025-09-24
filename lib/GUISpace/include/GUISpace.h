@@ -49,6 +49,10 @@ public:
       }
     }
 
+    void addWidget(std::shared_ptr<Widget> w){
+      gameEnv_.add_dynamicObj(w);
+    }
+
     Saturn& getSaturnRef(){
       return gameEnv_;
     }

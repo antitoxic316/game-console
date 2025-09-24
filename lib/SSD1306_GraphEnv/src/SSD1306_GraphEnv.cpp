@@ -28,6 +28,10 @@ void GraphEnv::drawText(int x, int y, const char *text, int size){
     //this->display();
 }
 
+void GraphEnv::drawLine(int x1, int y1, int x2, int y2){
+    display_.drawLine(x1, y1, x2, y2, 1);
+}
+
 void GraphEnv::display(){
     display_.display();
 }

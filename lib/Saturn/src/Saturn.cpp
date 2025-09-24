@@ -194,16 +194,16 @@ void Saturn::clearObjects(){
 }
 
 void Saturn::handleEvents(DynamicObj* obj){
-    std::queue<ObjEvent> emmitedEvents = obj->getEvents();
-    
-    for(; !emmitedEvents.empty(); emmitedEvents.pop()){
-        std::string ev_name = emmitedEvents.front().ev_name;
+    std::queue<ObjEvent> *emmitedEvents = obj->getEvents();
+
+    for(; !emmitedEvents->empty(); emmitedEvents->pop()){
+        std::string ev_name = emmitedEvents->front().ev_name;
         auto handler_entry = eventHandlers_.find(ev_name);
         if(handler_entry == eventHandlers_.end()){
             return;
         }
 
         std::function<void(void*)> event_f = handler_entry->second;
-        event_f(emmitedEvents.front().data);
+        event_f(emmitedEvents->front().data);
     }
 }

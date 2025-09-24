@@ -4,7 +4,7 @@ void WiFiChoser::init(){
   std::shared_ptr<Keyboard> keyboard = std::make_shared<Keyboard>("keyboard");
   keyboard->setGridI(1);
   keyboard->setGridJ(0);
-  keyboard->move(20, 0);
+  keyboard->move(40, 0);
   guiEnv_.addWidgetGrid(keyboard);
   
   std::shared_ptr<ButtonWidget> confirm_btn = std::make_shared<ButtonWidget>("confirm");
@@ -15,6 +15,11 @@ void WiFiChoser::init(){
   confirm_btn->setAButtonPressedCallback([this](InteractableWidget *w){});
   guiEnv_.addInteractableWidget(confirm_btn);
 
-  std::shared_ptr<Widget> text_buffer = std::make_shared<Widget>("txt_buff");
+  std::shared_ptr<TextBufferWidget> text_buffer = std::make_shared<TextBufferWidget>("txt_buff");
   text_buffer->move(0, 0);
+  guiEnv_.addWidget(text_buffer);
+
+  guiEnv_.getSaturnRef().addEvent("char typed", [this, text_buffer](void *ch){
+    text_buffer->addChar( *( (char*)ch ) );
+  });
 }
