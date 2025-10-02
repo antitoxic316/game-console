@@ -29,6 +29,14 @@ void InteractableGrid::onNavigationKeyPressed(const PControlKeys key){
             break;
     }
 
+    if(currentI_ == 0 && i_v == -1 ||
+       currentI_ == widgGridH_-1 && i_v == 1 ||
+       currentJ_ == 0 && j_v == -1 ||
+       currentJ_ == widgGridW_-1 && j_v == 1){
+            emitEvent("widgetReturnControl", nullptr);
+            return;
+    }
+
     newWidget = getNearestWidget(i_v, j_v);
 
     if(!newWidget)

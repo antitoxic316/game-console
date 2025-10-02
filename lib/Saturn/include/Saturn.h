@@ -47,8 +47,7 @@ public:
     std::string game_name;
 
     Saturn(GraphEnv &graph_env, SoftwareSerial &controllerInput);
-    ~Saturn(){};
-
+    ~Saturn() = default;
     void setHandleCollisionsFlag(bool v){
         handleColisions_ = v;
     }

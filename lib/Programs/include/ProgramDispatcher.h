@@ -6,44 +6,29 @@
 #include <memory>
 #include <map>
 #include <string>
+#include <stack>
+#include <queue>
 
 #include <Arduino.h>
+
+#include <IDispatchable.h>
+#include <ProgramShell.h>
 
 class ProgramDispatcher
 {
 private:
-    std::map<std::string, Program *> progMap_;
-    //std::vector<ProgramPriority> bgProgs_;
+    std::map<std::string, std::shared_ptr<ProgramShell>> progMap_;
+    
+    std::stack<std::shared_ptr<ProgramShell>> progStack_;
 public:
     ProgramDispatcher(){
 
     }
-    void registerProgram(const std::string &prog_name,  Program *prog){
-        progMap_[prog_name] = prog;
+    void registerProgram(const std::string prog_name,  std::shared_ptr<ProgramShell> prog){
+        progMap_[prog_name] = std::move(prog);
     }
 
-    void callProgram(Program &caller, const std::string &prog_name){
-        Serial.print(F("called program: "));
-        Serial.println(prog_name.c_str());
+    void enqueueProgram(const std::string prog_name, bool save_caller = false);
 
-        caller.interrupt();
-
-        auto prog_entry = progMap_.find(prog_name);
-        if(prog_entry == progMap_.end()){
-            Serial.println(F("no program with such name"));
-            caller.uninterrupt();
-            return;
-        }
-
-        Program *pr = progMap_.at(prog_name);
-
-        pr->uninterrupt();
-        pr->run();
-
-        caller.uninterrupt();
-    }
-
-    void yieldControl(){
-        // run programs in round robin
-    }
+    void eventLoop();
 };

@@ -11,6 +11,7 @@ public:
   Program(){
     
   }
+  virtual ~Program() = default;
   virtual void run(){
   }
   virtual void interrupt(){

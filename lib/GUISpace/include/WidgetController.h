@@ -34,7 +34,9 @@ public:
   }
 
   void onWidgetReturnControl(){
-    controlStack_.pop();
+    Serial.println("returned control");
+    if(controlStack_.size() > 1)
+      controlStack_.pop();
   } 
 
   void onKeyPressed(const PControlKeys key, const InputData input_data) override {

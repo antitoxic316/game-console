@@ -3,10 +3,11 @@
 
 #include <GUISpace.h>
 #include <ProgramDispatcher.h>
+#include <IDispatchable.h>
 
 const uint8_t test_label[8] = {0xFF, 0xFF, 0xFF,0xFF,0xFF,0xFF,0xFF,0xFF,};
 
-class MainMenuProgram
+class MainMenuProgram : public IDispatchable
 {
 private:
     GUISpace guiEnv_;
@@ -23,7 +24,7 @@ public:
         test_game_button->setGridJ(3);
         test_game_button->move(30, 10);
         test_game_button->setAButtonPressedCallback([this](InteractableWidget *w){
-            pd_.callProgram(guiEnv_.getSaturnRef(), "test");
+            pd_.enqueueProgram("test");
         });
         guiEnv_.addInteractableWidget(test_game_button);
         
@@ -34,7 +35,7 @@ public:
         pingpong_game_button->setGridJ(1);
         pingpong_game_button->move(10, 45);
         pingpong_game_button->setAButtonPressedCallback([this](InteractableWidget *w){
-            pd_.callProgram(guiEnv_.getSaturnRef(), "pingpong");
+            pd_.enqueueProgram("pingpong");
         });
         guiEnv_.addInteractableWidget(pingpong_game_button);
 
@@ -45,7 +46,7 @@ public:
         wifi_button->setGridJ(9);
         wifi_button->move(78, 30);
         wifi_button->setAButtonPressedCallback([this](InteractableWidget *w){
-            pd_.callProgram(guiEnv_.getSaturnRef(), "wifi");
+            pd_.enqueueProgram("wifi");
         });
         guiEnv_.addInteractableWidget(wifi_button);
     }
@@ -53,6 +54,10 @@ public:
 
     void init();
     void start();
+
+    Program* getProgramPtr() override{
+      return &(guiEnv_.getSaturnRef());
+    }
 };
 
 #endif

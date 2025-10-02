@@ -32,6 +32,7 @@ public:
 
     void addInteractableWidget(std::shared_ptr<InteractableWidget> widg){
       gameEnv_.add_dynamicObj(widg);
+      mainObjGrid_->setRoot();
       mainObjGrid_->placeWidget(widg, widg->getGridI(), widg->getGridJ());
     }
 

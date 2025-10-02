@@ -15,11 +15,21 @@ public:
     ~ButtonWidget() = default;
 
     virtual void drawCallback(GraphEnv &graph_env) override {
+        int x, y;
+        
+        x = this->getX();
+        y = this->getY();
+
+        if(Widget *pWidg = getParentWidget()){
+            x += pWidg->getX();
+            y += pWidg->getY();
+        }
+
         int drawSize = 2;
         if(!selected_){
             drawSize = 1;
         }
-        graph_env.drawText(this->getX(), this->getY(), label_.c_str(), drawSize);
+        graph_env.drawText(x, y, label_.c_str(), drawSize);
     }
 
     void setLabel(std::string str){

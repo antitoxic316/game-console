@@ -168,6 +168,8 @@ void Saturn::run(){
     //nh_.WPA2Connect(ssid, pass);
     //nh_.gameSyncInit();
 
+      Serial.printf("%d    %d\r\n\r", __LINE__, ESP.getFreeHeap());
+
     while(true){
         if(isInterrupted()){
             return;
@@ -198,7 +200,9 @@ void Saturn::handleEvents(DynamicObj* obj){
 
     for(; !emmitedEvents->empty(); emmitedEvents->pop()){
         std::string ev_name = emmitedEvents->front().ev_name;
+
         auto handler_entry = eventHandlers_.find(ev_name);
+        
         if(handler_entry == eventHandlers_.end()){
             return;
         }

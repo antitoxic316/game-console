@@ -6,10 +6,13 @@
 class Widget : public DynamicObj
 {
 private:
+    Widget *parentWidg_;
+
     int gridI_ = 0, gridJ_ = 0;
 public:
-    Widget(const std::string &name)
-    : DynamicObj(name)
+    Widget(const std::string &name, Widget *parent = nullptr)
+    : DynamicObj(name),
+      parentWidg_(parent)
     {
     }
     ~Widget() = default;
@@ -27,6 +30,14 @@ public:
     void setGridJ(int gridJ){
         gridJ_ = gridJ;
     };
+
+    Widget *getParentWidget(){
+        return parentWidg_;
+    }
+
+    void setParentWidget(Widget *w){
+        parentWidg_ = w;
+    }
 };
 
 #endif

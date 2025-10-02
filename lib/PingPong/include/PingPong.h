@@ -1,5 +1,7 @@
 #pragma once
 
+#include <IDispatchable.h>
+
 #include "Ball.h"
 #include "Player.h"
 
@@ -22,7 +24,7 @@ const std::map<uint16_t, PControlKeys> P2_KEY_MAPPING = {
 };
 
 
-class PingPong
+class PingPong : public IDispatchable
 {
 private:
     Saturn gameEnv_;
@@ -48,9 +50,9 @@ public:
     }
 
     void populateObjects();
-    void init();
 
-    Saturn* getSaturnPtr(){
+    void init() override;
+    Program* getProgramPtr() override {
       return &gameEnv_;
     }
 };

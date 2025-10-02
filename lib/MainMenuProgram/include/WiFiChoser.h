@@ -6,8 +6,9 @@
 #include <GUISpace.h>
 #include <Keyboard.h>
 #include <TextBufferWidget.h>
+#include <IDispatchable.h>
 
-class WiFiChoser
+class WiFiChoser : public IDispatchable
 {
 private:
     GUISpace guiEnv_;
@@ -15,7 +16,6 @@ public:
     WiFiChoser(GraphEnv &graph_env, SoftwareSerial &controllerInput) 
         :guiEnv_(graph_env, controllerInput)
     {
-        init();
     }
     ~WiFiChoser() = default;
 
@@ -24,7 +24,7 @@ public:
         guiEnv_.getSaturnRef().run();
     };
 
-    Saturn* getSaturnPtr(){
+    Program* getProgramPtr() override{
       return &(guiEnv_.getSaturnRef());
     }
 };

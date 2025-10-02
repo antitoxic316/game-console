@@ -7,33 +7,46 @@
 
 SoftwareSerial controllerSerial = SoftwareSerial(0, 1);
 
+
 void setup() {
   GraphEnv graphEnv(128, 64);
-
-  Serial.begin(19200);
-  delay(2000);
-  
   ProgramDispatcher pd;
 
-  //PingPong game(graphEnv, controllerSerial);
-  //Dummygame game2(graphEnv, controllerSerial);
-  WiFiChoser wifiprog(graphEnv, controllerSerial);
+  Serial.begin(19200);
+  delay(4000);
 
-  //game.init();
+  pd.registerProgram("pingpong", std::make_unique<ProgramShell>(
+    [&graphEnv]() -> std::shared_ptr<IDispatchable> 
+    {
+      return std::make_shared<PingPong>(graphEnv, controllerSerial);
+    }
+  ));
 
-  //game2.init();  
-  wifiprog.init();
+  pd.registerProgram("test", std::make_unique<ProgramShell>(
+      [&graphEnv]() -> std::shared_ptr<IDispatchable> 
+    {
+      return std::make_shared<Dummygame>(graphEnv, controllerSerial);
+    }));
+  
+  pd.registerProgram("wifi", std::make_shared<ProgramShell>(
+    [&graphEnv]() -> std::shared_ptr<WiFiChoser> 
+    {
+      return std::make_shared<WiFiChoser>(graphEnv, controllerSerial);
+    }));
+  
+  pd.registerProgram("mainmenu", std::make_shared<ProgramShell>(
+    [&graphEnv, &pd]() -> std::shared_ptr<MainMenuProgram> 
+    {
+      return std::make_shared<MainMenuProgram>(graphEnv, controllerSerial, pd);
+    }));
+  
 
-  //pd.registerProgram("pingpong", game.getSaturnPtr());
-  //pd.registerProgram("test", game2.getSaturnPtr());
-  pd.registerProgram("wifi", wifiprog.getSaturnPtr());
 
-  MainMenuProgram mainmenu(graphEnv, controllerSerial, pd);
-  mainmenu.init();
-
-  Serial.printf("%d    %d\r\n\r", __LINE__, ESP.getFreeHeap());
-
-  mainmenu.start();
+  while(1){
+    Serial.printf("%d    %d\r\n\r", __LINE__, ESP.getFreeHeap());
+    pd.enqueueProgram("mainmenu");
+    pd.eventLoop();
+  }
 }
 
 void loop() {

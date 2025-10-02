@@ -32,7 +32,9 @@ static const uint8_t ralsei_bitmap[] PROGMEM  = {
   0x00, 0x00, 0x00
 };
 
-class Dummygame
+#include <IDispatchable.h>
+
+class Dummygame : public IDispatchable
 {
 private:
     Saturn gameEnv_;
@@ -63,13 +65,11 @@ public:
 
     void endGame(){
       gameEnv_.interrupt();
-      gameEnv_.clearObjects();
-      init();
     };
 
     //must be implemented so the game can be dispatched
     //later that behaviour should be remade
-    Saturn* getSaturnPtr(){
+    Program* getProgramPtr() override{
       return &gameEnv_;
     }
 };
