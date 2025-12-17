@@ -4,26 +4,29 @@
 #include <vector>
 #include <string>
 #include <cstdint>
+#include <cstdlib>
 
 #include <SSD1306_GraphEnv.h>
 
 class Obj
 {
 private:
-    std::string name_;
+    char *name_;
     int x_ = 0, y_ = 0;
     int w_ = 0, h_ = 0;
     bool isSolid_ = true;
-    bool isMovable_ = true;
     const uint8_t *bitMap_;
 public:
-    Obj (const std::string &name) : name_(name) {
-
+    Obj (const std::string &name) {
+        name_ = (char*)calloc(1, name.size()+1);
+        strcpy(name_, name.c_str());
     };
-    virtual ~Obj() {};
+    ~Obj() {
+        free(name_);
+    };
     bool operator==(const Obj &obj) const {return obj.name_ == name_; };
     
-    virtual const std::string& getName(){
+    virtual char *getName(){
         return name_;
     }
 
@@ -54,8 +57,8 @@ public:
         return h_;
     }
 
-    bool isMovable(){
-        return isMovable_;
+    bool isSolid(){
+        return isSolid_;
     }
 
     void move(int x, int y);

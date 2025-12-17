@@ -1,6 +1,13 @@
 #pragma once
 
 #include <Arduino.h>
+#include <map>
+#include <string>
+#include <vector>
+
+struct PROG_CONTEXT {
+    std::map<std::string, std::vector<std::string>> entries;
+};
 
 class Program
 {

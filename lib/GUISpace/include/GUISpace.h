@@ -37,6 +37,7 @@ public:
     }
 
     void addWidgetGrid(std::shared_ptr<InteractableGrid> widg){
+
       gameEnv_.add_dynamicObj(widg);
       mainObjGrid_->placeWidget(widg, widg->getGridI(), widg->getGridJ());
       for(int i = 0; i < 10; i++){
@@ -46,6 +47,8 @@ public:
             continue;
           }
           gameEnv_.add_dynamicObj(child);
+
+          Serial.printf("memory after adding letter: %d\r\n", ESP.getFreeHeap());
         }
       }
     }

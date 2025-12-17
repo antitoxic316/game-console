@@ -27,7 +27,6 @@ public:
     {
 
     }
-    ~InteractableWidget() = default;
 
     void setWidgetSelectedCallback(std::function<void(InteractableWidget *self)> cb){
         widgetSelectedCB_ = cb;
@@ -44,13 +43,13 @@ public:
 
     virtual void onWidgetSelected() override {
         selected_ = true;
-        Serial.print(this->getName().c_str());
+        Serial.print(this->getName());
         Serial.println(F(" selected"));
     }
 
     virtual void onWidgetUnSelected() override {
         selected_ = false;
-        Serial.print(this->getName().c_str());
+        Serial.print(this->getName());
         Serial.println(F(" unselected"));
     }
 

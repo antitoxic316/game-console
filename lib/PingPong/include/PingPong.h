@@ -2,6 +2,8 @@
 
 #include <IDispatchable.h>
 
+#include <GUISpace.h>
+
 #include "Ball.h"
 #include "Player.h"
 
@@ -24,16 +26,20 @@ const std::map<uint16_t, PControlKeys> P2_KEY_MAPPING = {
 };
 
 
+int askForOnlineViaGUI(GraphEnv &graph_env, SoftwareSerial &controllerInput);
+
+
 class PingPong : public IDispatchable
 {
 private:
     Saturn gameEnv_;
+    bool onlinePlay_;
 public:
     PingPong(GraphEnv &graph_env, SoftwareSerial &controllerInput)
-        :gameEnv_(graph_env, controllerInput)
+        :gameEnv_(graph_env, controllerInput),
+        onlinePlay_(askForOnlineViaGUI(graph_env, controllerInput))
     {
         gameEnv_.addEvent("game over", [this](void *data){ onGameOver(data); });
-        gameEnv_.game_name = "pingPONG";
     }
     ~PingPong();
 
@@ -45,11 +51,10 @@ public:
         gameEnv_.getGraphicalEnv().drawText(0,0,"8888888", 4);
         gameEnv_.getGraphicalEnv().display();
         delay(500);
-        gameEnv_.clearObjects();
-        init();
     }
 
-    void populateObjects();
+    void populateOnlineObjects();
+    void populateOfflineObjects();
 
     void init() override;
     Program* getProgramPtr() override {

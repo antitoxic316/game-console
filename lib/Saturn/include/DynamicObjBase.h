@@ -25,7 +25,6 @@ public:
             }
         );
     };
-    ~DynamicObjBase() override = default;
 };
 
 #endif

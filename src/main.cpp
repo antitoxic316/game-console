@@ -5,10 +5,15 @@
 #include <NetworkHandler.h>
 #include <WiFiChoser.h>
 
-SoftwareSerial controllerSerial = SoftwareSerial(0, 1);
+#include <cstdlib>
+#include <stdlib.h>
+
+SoftwareSerial controllerSerial = SoftwareSerial(14, 12);
 
 
 void setup() {
+  ESP.resetHeap();
+
   GraphEnv graphEnv(128, 64);
   ProgramDispatcher pd;
 
@@ -40,6 +45,10 @@ void setup() {
       return std::make_shared<MainMenuProgram>(graphEnv, controllerSerial, pd);
     }));
   
+
+  Serial.printf("Free heap: %u bytes\r\n", ESP.getFreeHeap());
+        Serial.printf("Max alloc block: %u bytes\r\n", ESP.getMaxFreeBlockSize());
+        Serial.printf("Heap fragmentation: %u\r\n", ESP.getHeapFragmentation());
 
 
   while(1){

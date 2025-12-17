@@ -29,11 +29,10 @@ private:
     std::vector<std::shared_ptr<StaticObj>> staticObjects_;
     std::vector<std::shared_ptr<DynamicObj>> dynamicObjects_;
 
-    std::vector<std::shared_ptr<NetworkedObj>> clientControlledObjects_;
-    std::vector<std::shared_ptr<NetworkedObj>> serverControlledObjects_;
-
     std::map<std::string, std::function<void(void*)>> eventHandlers_;
 
+
+    
     GraphEnv &graphEnv_;
     InputHandler inputHandler_;
 
@@ -41,6 +40,8 @@ private:
     //DatabaseHandler dbh_;
 
     bool handleColisions_ = true;
+
+    bool onlinePlay_ = false;
 
     int frame_rate = 25;
 public:
@@ -80,6 +81,14 @@ public:
     void clearObjects();
     void handleEvents(DynamicObj* obj);
 
+    void enableOnlinePlay(){
+        onlinePlay_ = true;
+    }
+    void disableOnlinePlay(){
+        onlinePlay_ = false;
+    }
+
+    void handleServerConnection();
 };
 
 template<typename T>
@@ -97,16 +106,14 @@ void Saturn::add_staticObj(std::shared_ptr<T> obj_ptr, uint16_t flags){
     static_assert(std::is_base_of<StaticObj, T>::value,
                         "Argument failed check for inheritence from DynamicObj");
     staticObjects_.push_back(obj_ptr);
-
-    nh_.registerObj(obj_ptr, flags);
 }
 
 template<typename T>
 void Saturn::add_controlableObj(std::shared_ptr<T> obj_ptr, uint16_t flags){
     static_assert(std::is_base_of<IControlableAbstr, T>::value,
                         "Argument failed check for inheritence from IControlableAbstr");
-    controlableObjects_.push_back(obj_ptr);
-
+    if(flags & OBJ_CLIENT_CONTROLLED)
+        controlableObjects_.push_back(obj_ptr);
     // for rendering and collisions and more
     this->add_dynamicObj(obj_ptr, flags);
 }

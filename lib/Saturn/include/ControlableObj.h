@@ -77,8 +77,6 @@ public:
     void setKeyUnpressedCallback(std::function<void(KeysEnum, InputData)> keyUnpressedCallback){
         this->keyUnpressedCallback_ = keyUnpressedCallback;
     }
-
-    virtual ~ControlableObj() = default;
 };
 
 #endif

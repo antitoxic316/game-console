@@ -20,6 +20,8 @@ private:
     std::map<std::string, std::shared_ptr<ProgramShell>> progMap_;
     
     std::stack<std::shared_ptr<ProgramShell>> progStack_;
+
+    PROG_CONTEXT globalContext_;
 public:
     ProgramDispatcher(){
 
@@ -31,4 +33,14 @@ public:
     void enqueueProgram(const std::string prog_name, bool save_caller = false);
 
     void eventLoop();
+
+    void makeContextEntry(std::string progName, std::string val){
+        if(globalContext_.entries.count(progName)){
+            
+        }
+    
+    };
+    bool checkContextEntry(std::string progName, std::string val){
+        return true;
+    }
 };

@@ -11,7 +11,6 @@ public:
     : Obj(name){
 
     }
-    virtual ~StaticObj() override;
 };
 
 #endif

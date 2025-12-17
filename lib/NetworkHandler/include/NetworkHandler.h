@@ -3,7 +3,6 @@
 #include <queue>
 #include <memory>
 
-#include "InetMsg.h"
 #include "NetworkedObj.h"
 
 #include "Program.h"
@@ -13,6 +12,15 @@
 #include <ESP8266WiFi.h>
 #include <WiFiUdp.h>
 #include <WiFiClient.h>
+
+enum SESSION_STATUS {
+  SESSION_DISCONNECTED,
+  SESSION_CONNECTED,
+  SESSION_UNITIALIZED,
+  SESSION_INITIALIZED,
+  SESSION_WAITING_FOR_GAME,
+  SESSION_ACTIVE,
+};
 
 class NetworkHandler : public Program
 {
@@ -24,13 +32,14 @@ private:
   std::vector<NetworkedObj> clientControlled_;
   std::vector<NetworkedObj> serverControlled_;
 
-  std::queue<std::string> sendPacketsQ_;
-  std::queue<std::string> recvPacketsQ_;
+  SESSION_STATUS gameSessionStatus_;
+
 protected:
   void sendUdpPackets();
   void recvUdpPackets();
 public:
-  NetworkHandler(){
+  NetworkHandler():
+  gameSessionStatus_(SESSION_DISCONNECTED){
   }
   void run() override;
   void syncServer();
@@ -39,7 +48,12 @@ public:
     clientControlled_.clear();
     serverControlled_.clear();
   }
-  void unregisterObj(std::string obj_name);
+  void unregisterObj(char *obj_name);
   void WPA2Connect(const char *ssid, const char *pass);
   void gameSyncInit();
+  SESSION_STATUS getSessionStatus(){
+    return gameSessionStatus_;
+  }
+
+
 };

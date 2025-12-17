@@ -3,46 +3,32 @@
 #include <InteractableGrid.h>
 #include <ButtonWidget.h>
 
-#define keys_W 5
-#define keys_H 5
+#define keys_W 8
+#define keys_H 8
 
 class Keyboard : public InteractableGrid
 {
 private:
+  int chunkSize_ = keys_W / 2;
+
+  int lastLoadedChunkI_ = 0;
+  int lastLoadedChunkJ_ = 0;
+
+  int keysOffsetDistance_ = 7;
+  int margin_ = 2;
+protected:
+  std::shared_ptr<InteractableWidget> getNearestWidget(int i_v, int j_v) override;
 public:
   Keyboard(const std::string &name) :
     InteractableGrid(name)
-  {
-    keyboardInit();
+  { 
+    loadChunk(0,0);
+    currentI_ = 0;
+    currentJ_ = 0;
   }
 
-  void keyboardInit(){
-    int offsetDistance = 12;
+  void drawCallback(GraphEnv &env) override;
 
-    for(int i = 0; i < keys_H; i++){
-      for(int j = 0; j < keys_W; j++){
-
-        std::string btn_name = std::to_string((char)((i*keys_H + j)+32)); //first ascii
-        std::shared_ptr<ButtonWidget> key_btn = std::make_shared<ButtonWidget>(btn_name);
-        key_btn->setLabel(btn_name);
-        key_btn->setGridI(i);
-        key_btn->setGridJ(j);
-        key_btn->move(j+offsetDistance*j, i+offsetDistance*i);
-        key_btn->setAButtonPressedCallback([this, btn_name](InteractableWidget *w){
-          Serial.print(btn_name.c_str());
-          Serial.println(" key pressed");
-          w->emitEvent("char typed", (void *)(w->getName().c_str())); //first char is the CHARACTER
-        });
-        key_btn->setParentWidget(this);
-        placeWidget(key_btn, key_btn->getGridI(), key_btn->getGridI());
-
-        Serial.printf("i: %d, j: %d, lab: %s \n\r", i, j, btn_name.c_str());
-      }
-    }
-  }
-
-  void drawCallback(GraphEnv &env) override {
-    env.drawLine(getX(), getY(), getX(), env.getScreenH());
-    env.drawLine(getX(), getY(), env.getScreenW(), getY());
-  }
+  void loadChunk(int i, int j);
+  void unloadChunk(int i, int j);
 };

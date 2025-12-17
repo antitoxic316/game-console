@@ -15,7 +15,6 @@ public:
       parentWidg_(parent)
     {
     }
-    ~Widget() = default;
 
     int getGridI() {
         return gridI_;

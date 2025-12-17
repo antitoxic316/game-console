@@ -59,7 +59,7 @@ void InteractableGrid::onMiscKeyPressed(const PControlKeys key){
             selectedWidget_->onBPressed();
             return;
         case A:
-            Serial.println(selectedWidget_->getName().c_str());
+            Serial.println(selectedWidget_->getName());
             selectedWidget_->onAPressed();
             return;
         default:

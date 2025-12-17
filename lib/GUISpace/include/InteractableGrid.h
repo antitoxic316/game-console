@@ -14,16 +14,16 @@ private:
 protected:
     int widgGridW_ = 10;
     int widgGridH_ = 10;
-    std::array<std::array<std::shared_ptr<InteractableWidget>, 10>, 10> widgetGrid_;
+    std::shared_ptr<InteractableWidget> widgetGrid_[10][10];
 
     std::shared_ptr<InteractableWidget> selectedWidget_ = nullptr;
     int currentI_ = widgGridH_/2;
     int currentJ_ = widgGridW_/2;
 
 
-    void onNavigationKeyPressed(const PControlKeys key);
-    void onMiscKeyPressed(const PControlKeys key);
-    std::shared_ptr<InteractableWidget> getNearestWidget(int i_v, int j_v);
+    virtual void onNavigationKeyPressed(const PControlKeys key);
+    virtual void onMiscKeyPressed(const PControlKeys key);
+    virtual std::shared_ptr<InteractableWidget> getNearestWidget(int i_v, int j_v);
 public:
   InteractableGrid(const std::string &name) :
     ControlableWidget(name)
@@ -46,8 +46,6 @@ public:
   std::shared_ptr<InteractableWidget> getChildWidget(int i, int j){
     return widgetGrid_[i][j];
   }
-
-  ~InteractableGrid() = default;
 
   void setRoot(){
     isRoot_ = true;

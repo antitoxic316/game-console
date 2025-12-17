@@ -40,8 +40,6 @@ public:
     virtual void onKeyUnpressed(const KeysEnum key, const InputData i_data) override{
 
     }
-    
-    ~ControlableObjBase() override = default;
 };
 
 #endif

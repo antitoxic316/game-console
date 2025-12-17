@@ -6,6 +6,7 @@
 #include <functional>
 #include <string>
 #include <queue>
+#include <list>
 
 struct Vec2
 {
@@ -27,7 +28,7 @@ struct ObjEvent {
 class DynamicObj : public Obj
 {
 private:
-    std::queue<ObjEvent> eventQueue_;
+    std::queue<ObjEvent, std::list<ObjEvent>> eventQueue_;
     std::function<void(const Collision)> collisionCallback_;
     std::function<void()> framePassedCallback_;
 public:
@@ -36,7 +37,6 @@ public:
         collisionCallback_([](const Collision coll_info) {}),
         framePassedCallback_([]() {}){
     };
-    virtual ~DynamicObj() = default;
 
     void onFramePassed(){
         this->framePassedCallback_();
@@ -56,7 +56,7 @@ public:
 
     //TODO make this more c++ish??
     void emitEvent(const std::string &event_name, void* data);
-    std::queue<ObjEvent> *getEvents(){
+    std::queue<ObjEvent, std::list<ObjEvent>> *getEvents(){
         return &eventQueue_;
     }
 };

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <Obj.h>
-#include "InetMsg.h"
 
 #include <vector>
 #include <map>
@@ -45,10 +44,11 @@ public:
   bool operator==(const NetworkedObj &o) const { return o.baseObj_ == baseObj_; };
 
   void registerField(std::string, FieldDescription);
-  void processPacket(InetMsg &mag);
+  void handlePacket(char *msg);
   std::shared_ptr<Obj> getBaseObj(){
     return baseObj_;
   }
 
-  std::string serialize();
+  std::string serializeData();
+  std::string serializeObjInfo();
 };

@@ -32,7 +32,7 @@ void Saturn::update_frame(void){
             continue;
         }
         for(auto obj_collision: *obj_colls){
-            if(obj_collision.obj->isMovable() && obj->isMovable()){
+            if(obj_collision.obj->isSolid() && obj->isSolid()){
                 double dispositionX = (double)obj_collision.penetrationDepth.x / 2.0;
                 if (dispositionX < 0){
                     dispositionX = std::floor(dispositionX);
@@ -161,22 +161,45 @@ Collision Saturn::getCollisionInfo(Obj *objA, Obj *objB){
     return coll_info;
 }
 
+
+void Saturn::handleServerConnection(){
+    if(!onlinePlay_){
+        return;
+    }
+    
+    if(WiFi.status() != WL_CONNECTED){
+        Serial.println("trying to connect to WIFI");
+        nh_.WPA2Connect(ssid, pass);
+    }
+
+    switch (nh_.getSessionStatus())
+    {
+    case SESSION_ACTIVE:
+        nh_.syncServer();
+        return;
+        break;
+    default:
+        Serial.println("creating session");
+        nh_.gameSyncInit();
+        break;
+    }
+}
+
 void Saturn::run(){
     ulong start_time = millis();
 
-
-    //nh_.WPA2Connect(ssid, pass);
-    //nh_.gameSyncInit();
-
-      Serial.printf("%d    %d\r\n\r", __LINE__, ESP.getFreeHeap());
+    Serial.printf("Free heap: %u bytes\r\n", ESP.getFreeHeap());
+    Serial.printf("Max alloc block: %u bytes\r\n", ESP.getMaxFreeBlockSize());
+    Serial.printf("Heap fragmentation: %u\r\n", ESP.getHeapFragmentation());
 
     while(true){
         if(isInterrupted()){
             return;
         }
 
+        handleServerConnection();
+
         inputHandler_.readInput();
-        //nh_.syncServer();
 
         ulong current_time = millis();
         if((current_time - start_time) > 1000ul/frame_rate){
@@ -196,7 +219,7 @@ void Saturn::clearObjects(){
 }
 
 void Saturn::handleEvents(DynamicObj* obj){
-    std::queue<ObjEvent> *emmitedEvents = obj->getEvents();
+    std::queue<ObjEvent, std::list<ObjEvent>> *emmitedEvents = obj->getEvents();
 
     for(; !emmitedEvents->empty(); emmitedEvents->pop()){
         std::string ev_name = emmitedEvents->front().ev_name;

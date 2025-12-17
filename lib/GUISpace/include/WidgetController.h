@@ -43,7 +43,7 @@ public:
     ControlableWidget *activeWidget;
 
     activeWidget = controlStack_.top();
-    Serial.println(activeWidget->getName().c_str());
+    Serial.println(activeWidget->getName());
     activeWidget->onKeyPressed(key, input_data);
   }
 };
