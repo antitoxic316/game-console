@@ -100,23 +100,37 @@ void NetworkedObj::handlePacket(char *str){
   } 
   
   if(!strcmp(j["type"], "obj_update")){
+    if(!j.containsKey("packet")) return;
     JsonObject packet = j["packet"].as<JsonObject>();
+
+    if(!packet.containsKey("obj_name")) return;
     if(strcmp(packet["obj_name"], baseObj_->getName())){
       return; 
     }
+
+    if(!packet.containsKey("interpol_fields")) return;
+    if(!packet.containsKey("interpol_values")) return;
     JsonArray fields_arr = j["packet"]["interpol_fields"];
     JsonArray vals_arr = j["packet"]["interpol_values"]; 
 
+    if(fields_arr.size() != vals_arr.size()) return;
 
-    for (int i = 0; i < j["packet"]["interpol_fields"].size(); i++) {
+    for (int i = 0; i < fields_arr.size(); i++) {
       const char *field = fields_arr[i];
       int val = vals_arr[i];
     
-      Serial.println(field);
-      Serial.println(val);
-      
       auto setter_cb = fieldMap_[field].setter;
       setter_cb(std::any(val));
     }
+  } else if (!strcmp(j["type"], "event")){
+    if(!j.containsKey("packet")) return;
+    JsonObject packet = j["packet"].as<JsonObject>();
+
+    if(!packet.containsKey("ev_name")) return;
+    if(!packet.containsKey("ev_data")) return;
+    std::string ev_name = packet["ev_name"].as<std::string>();
+    void *ev_data = (void *)packet["ev_data"].as<const char*>();
+
+    baseObj_->emitEvent(ev_name, ev_data);
   }
 }

@@ -11,7 +11,7 @@ void NetworkHandler::run(){
 }
 
 
-void NetworkHandler::registerObj(std::shared_ptr<Obj> obj, uint16_t flags){
+void NetworkHandler::registerObj(std::shared_ptr<DynamicObj> obj, uint16_t flags){
   NetworkedObj n_obj = NetworkedObj(obj);
 
   if(flags & OBJ_CLIENT_CONTROLLED){
@@ -36,6 +36,9 @@ void NetworkHandler::syncServer(){
   if(gameSessionStatus_ != SESSION_ACTIVE){
     return;
   }
+
+  recvTcpPackets();
+  sendTcpPackets();
 
   recvUdpPackets();
   sendUdpPackets();
@@ -152,26 +155,112 @@ void NetworkHandler::gameSyncInit(){
       delay(100);
 
       bool confirmed = false;
-      while(msg.startsWith("GAME_STARTED")){
+      while(!msg.startsWith("GAME_STARTED")){
         if(!confirmed){
           udp_.beginPacket("192.168.1.26", netwPort_);
           udp_.write('r');
           udp_.endPacket();
           delay(100);
         }
-        unsigned long wait_time = 0;
-        unsigned long t = millis();
-        int r = -1;
-        while(r == -1 || wait_time <= 1000ul){
-          r = tcpCli_.peek();
-          if(r != -1){
-            Serial.println("trying to read server reply :(");
-            msg = tcpCli_.readString();
-          }
-          wait_time = millis() - t;
-        }
+    
+        Serial.println("trying to read server reply :(");
+        msg = tcpCli_.readString();
       }
 
       gameSessionStatus_ = SESSION_ACTIVE;
   }
+}
+
+void NetworkHandler::sendTcpPackets(){
+  if(tcpCli_.availableForWrite()){
+    for(ObjEvent &ev = netwEvents_.front(); netwEvents_.size() > 0; netwEvents_.pop()){
+      tcpCli_.printf(serializeEvent(ev).c_str());
+      if(ev.data) free(ev.data);
+    }
+  }
+}
+
+void NetworkHandler::recvTcpPackets(){
+  size_t nbuff = 256;
+  uint8_t buff[nbuff] = {'\0'};
+
+  int r = 0, i = 0;
+  while(r != -1){
+    r = tcpCli_.read();
+    buff[i++] = r;
+    if(i >= nbuff){
+      break;
+    }
+  }
+
+  if(i == nbuff-1){
+    Serial.println("buffer overload");
+    return;
+  }
+  handleTcpPacket(buff);
+}
+
+
+void NetworkHandler::handleTcpPacket(uint8_t *buff){
+  JsonDocument j;
+  DeserializationError err;
+
+  err = deserializeJson(j, buff);
+
+  if(err){
+    Serial.println(err.c_str());
+    return;
+  }
+
+  if(!strcmp(j["type"], "event")){
+    if(!j.containsKey("packet")) return;
+    JsonObject packet = j["packet"].as<JsonObject>();
+
+    if(!packet.containsKey("ev_name")) return;
+    if(!packet.containsKey("ev_data")) return;
+
+    std::string ev_name = packet["ev_name"];
+    char *ev_data = strdup(packet["ev_data"]);
+
+    //for now the first server controlled object will just emit all network events
+    if(serverControlled_.size() == 0) return;
+    if(ev_name == "") return;
+    serverControlled_.at(0).getBaseObj()->emitEvent(ev_name, (void*)ev_data);
+  }
+}
+
+std::string NetworkHandler::serializeEvent(ObjEvent ev){
+  JsonDocument j;
+
+  size_t nbuff = 256;
+  char buff[nbuff] = {0, };
+
+  j["type"] = "event";
+  j["packet"]["ev_name"] = ev.ev_name;
+  if(ev.data){
+    j["packet"]["ev_data"] = std::string((char*)ev.data);
+    free(ev.data);
+  } else {
+    j["packet"]["ev_data"] = "";
+  }
+
+  j["echo"] = true;
+  j["server_processed"] = true;
+
+  serializeJson(j, buff, nbuff);
+
+  if(buff[nbuff-1] != '\0'){
+    // buffer overflow
+    Serial.println("event not parsed: buffer overflow");
+    return nullptr;
+  }
+
+  return std::string(buff);
+} 
+
+void NetworkHandler::duplicateEvent(ObjEvent ev){
+  if(ev.data)
+    ev.data = (void*)strdup((char*)ev.data);
+
+  netwEvents_.push(ev);
 }

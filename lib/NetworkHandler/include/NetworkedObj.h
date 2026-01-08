@@ -1,6 +1,6 @@
 #pragma once
 
-#include <Obj.h>
+#include <DynamicObj.h>
 
 #include <vector>
 #include <map>
@@ -31,11 +31,11 @@ struct FieldDescription{
 class NetworkedObj
 {
 private:
-  std::shared_ptr<Obj> baseObj_;
+  std::shared_ptr<DynamicObj> baseObj_;
   std::map<std::string, FieldDescription> fieldMap_;
   std::map<std::string, FieldDescription> makeFieldMapFromObj(std::shared_ptr<Obj> obj);
 public:
-  NetworkedObj(std::shared_ptr<Obj> obj) :
+  NetworkedObj(std::shared_ptr<DynamicObj> obj) :
     baseObj_(obj),
     fieldMap_(makeFieldMapFromObj(obj))
   {
@@ -45,7 +45,7 @@ public:
 
   void registerField(std::string, FieldDescription);
   void handlePacket(char *msg);
-  std::shared_ptr<Obj> getBaseObj(){
+  std::shared_ptr<DynamicObj> getBaseObj(){
     return baseObj_;
   }
 

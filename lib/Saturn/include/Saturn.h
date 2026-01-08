@@ -31,13 +31,10 @@ private:
 
     std::map<std::string, std::function<void(void*)>> eventHandlers_;
 
+    GraphEnv &graphEnv_; /**< Aggregation: Saturn uses GraphEnv */
+    InputHandler inputHandler_; /**< Conposition owns InputeHandler */
 
-    
-    GraphEnv &graphEnv_;
-    InputHandler inputHandler_;
-
-    NetworkHandler nh_;
-    //DatabaseHandler dbh_;
+    NetworkHandler nh_;  /**< Conposition owns NetworkHandler */
 
     bool handleColisions_ = true;
 

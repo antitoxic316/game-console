@@ -31,6 +31,7 @@ void Saturn::update_frame(void){
         if(!obj_colls){
             continue;
         }
+        //collision resolution
         for(auto obj_collision: *obj_colls){
             if(obj_collision.obj->isSolid() && obj->isSolid()){
                 double dispositionX = (double)obj_collision.penetrationDepth.x / 2.0;
@@ -194,7 +195,7 @@ void Saturn::run(){
 
     while(true){
         if(isInterrupted()){
-            return;
+            break;
         }
 
         handleServerConnection();
@@ -208,6 +209,9 @@ void Saturn::run(){
         }
         delay(1);
     }
+
+    //send all queued up network events
+    nh_.syncServer();
 }
 
 void Saturn::clearObjects(){
@@ -230,7 +234,13 @@ void Saturn::handleEvents(DynamicObj* obj){
             return;
         }
 
+        void *d = emmitedEvents->front().data;
+        
+        if(onlinePlay_)
+            nh_.duplicateEvent(emmitedEvents->front());
+
         std::function<void(void*)> event_f = handler_entry->second;
-        event_f(emmitedEvents->front().data);
+        event_f(d);
+        if(d) free(d);
     }
 }

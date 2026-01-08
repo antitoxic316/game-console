@@ -86,7 +86,6 @@ void PingPong::populateOfflineObjects(){
 }
 
 int askForOnlineViaGUI(GraphEnv &graph_env, SoftwareSerial &controllerInput){
-    Serial.println("asking");
     GUISpace guiEnv_(graph_env, controllerInput);
 
     int yes = 0;

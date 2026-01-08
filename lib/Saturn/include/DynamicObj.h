@@ -23,6 +23,7 @@ struct Collision{
 struct ObjEvent {
     const std::string ev_name;
     void *data;
+    ObjEvent(std::string n, void *d=nullptr) :ev_name(n), data(d){};
 };
 
 class DynamicObj : public Obj
